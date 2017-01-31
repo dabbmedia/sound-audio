@@ -49,4 +49,7 @@ FORMS    +=
 
 QT+=widgets
 
-DISTFILES +=
+DISTFILES += \
+    icon-add.svg \
+    icon-arrow-select.svg \
+    icon-split.svg
