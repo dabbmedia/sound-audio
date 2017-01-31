@@ -16,13 +16,13 @@ TimelineEditor::TimelineEditor(QWidget *parent) : QWidget(parent)
 
     QToolButton *btnClipSelect = new QToolButton(this);
     btnClipSelect->setFixedSize(QSize(32, 32));
-    btnClipSelect->setIcon(QIcon("/Users/brent/Sites/sound_audio/app/artwork/icons/svg/icon-arrow-select.svg"));
+    btnClipSelect->setIcon(QIcon(":/icon-arrow-select.svg"));
     btnClipSelect->setToolTip("Select");
 //    connect(btnClipSelect, SIGNAL (clicked()), this, SLOT (stopMainTimer()));
 
     QToolButton *btnClipSplit = new QToolButton(this);
     btnClipSplit->setFixedSize(QSize(32, 32));
-    QPixmap pmSplit("/Users/brent/Sites/sound_audio/app/artwork/icons/svg/icon-split.svg");
+    QPixmap pmSplit(":/icon-split.svg");
     QIcon iconSplit(pmSplit);
     btnClipSplit->setIcon(iconSplit);
     btnClipSplit->setToolTip("Split");
@@ -36,7 +36,7 @@ TimelineEditor::TimelineEditor(QWidget *parent) : QWidget(parent)
 
     QToolButton *btnAddTimeline = new QToolButton(this);
     btnAddTimeline->setFixedSize(QSize(32, 32));
-    btnAddTimeline->setIcon(QIcon("/Users/brent/Sites/sound_audio/app/artwork/icons/svg/icon-add.svg"));
+    btnAddTimeline->setIcon(QIcon(":/icon-add.svg"));
     btnAddTimeline->setToolTip("Add Timeline");
 //    connect(btnClipSelect, SIGNAL (clicked()), this, SLOT (stopMainTimer()));
 

@@ -1,0 +1,7 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+    <file>icon-add.svg</file>
+    <file>icon-arrow-select.svg</file>
+    <file>icon-split.svg</file>
+</qresource>
+</RCC>
