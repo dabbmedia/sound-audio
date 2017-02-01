@@ -42,14 +42,10 @@
 #include <QStyleFactory>
 #include <QtWidgets>
 
-//#include "audiodevices.h"
-#include "audiorecorder.h"
 #include "mainwindow.h"
 #include "styles.h"
-// #include "widget.h"
 
 int main(int argv, char **args)
-//int main(int argc, char *argv[])
 {
 
     QApplication app(argv, args);
