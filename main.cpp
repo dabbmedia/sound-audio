@@ -38,12 +38,15 @@
 **
 ****************************************************************************/
 
+//#include <QGraphicsScene>
+//#include <QGraphicsView>
 #include <QApplication>
 #include <QStyleFactory>
 #include <QtWidgets>
 
 #include "mainwindow.h"
 #include "styles.h"
+#include "timelineeditor.h"
 
 int main(int argv, char **args)
 {
@@ -55,7 +58,7 @@ int main(int argv, char **args)
     Styles styles;
 
     MainWindow window;
-    window.setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    window.setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     /* Get screen dimensions to set window size */
     QDesktopWidget desk;
@@ -65,10 +68,6 @@ int main(int argv, char **args)
     window.resize(screenWidth, screenHeight);
     window.setWindowTitle("SoundAudio");
     window.show();
-
-    /* Records audio and saves as wav or raw file */
-//    AudioRecorder recorder;
-//    recorder.show();
 
     return app.exec();
 }

@@ -32,7 +32,8 @@ SOURCES += main.cpp \
     styles.cpp \
     timeline.cpp \
     timelineeditor.cpp \
-    resourcebrowser.cpp
+    resourcebrowser.cpp \
+    timelineslider.cpp
 
 HEADERS  += \
     mainwindow.h \
@@ -40,7 +41,8 @@ HEADERS  += \
     styles.h \
     timeline.h \
     timelineeditor.h \
-    resourcebrowser.h
+    resourcebrowser.h \
+    timelineslider.h
 
 FORMS    +=
 

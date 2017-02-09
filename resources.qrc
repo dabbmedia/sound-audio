@@ -1,7 +1,12 @@
-<!DOCTYPE RCC><RCC version="1.0">
-<qresource>
-    <file>icon-add.svg</file>
-    <file>icon-arrow-select.svg</file>
-    <file>icon-split.svg</file>
-</qresource>
+<RCC>
+    <qresource prefix="/">
+        <file>icon-add.svg</file>
+        <file>icon-arrow-select.svg</file>
+        <file>icon-split.svg</file>
+        <file>icon-pause.svg</file>
+        <file>icon-play.svg</file>
+        <file>icon-stop.svg</file>
+        <file>icon-beginning.svg</file>
+        <file>icon-record.svg</file>
+    </qresource>
 </RCC>

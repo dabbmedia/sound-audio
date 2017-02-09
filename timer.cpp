@@ -1,48 +1,41 @@
 #include "timer.h"
 
+#include <QApplication>
 #include <QWidget>
-#include <QtDebug>
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QLCDNumber>
 #include <QTime>
 #include <QTimer>
-#include <QLineEdit>
 
-Timer::Timer(QWidget *parent) : QWidget(parent)
+Timer::Timer(QWidget *parent) : QTimer(parent)
 {
-    QHBoxLayout *hbox = new QHBoxLayout(this);
-    hbox->setContentsMargins(10, 2, 0, 0);
+	masterTime = new QTime;
+	resetTimer();
 
-    lcdTimer = new QLCDNumber;
-    lcdTimer->setSegmentStyle(QLCDNumber::Flat);
-    lcdTimer->setDigitCount(12);
-
-    hbox->addWidget(lcdTimer, 0, Qt::AlignLeft | Qt::AlignTop);
-
-    lcdTimer->display("00:00:00.000");
-
-    masterTime = new QTime;
-
-    masterTimer = new QTimer(this);
-    masterTimer->setTimerType(Qt::PreciseTimer);
-    masterTimer->setInterval( 50 );
-    connect(masterTimer, SIGNAL(timeout()), this, SLOT(advanceTimeline()));
+    setTimerType(Qt::PreciseTimer);
+	setInterval(10);
+	connect(this, SIGNAL(timeout()), this, SLOT(advanceTimer()));
 }
 
-void Timer::advanceTimeline() {
-//    qDebug() << "ax name: " << editTimerText->accessibleName();
-    QTime t = QTime(0, 0, 0, 0).addMSecs(masterTime->elapsed());
-    QString stringElapsed = t.toString("hh:mm:ss.zzz");
-    lcdTimer->display(stringElapsed);
+void Timer::advanceTimer() {
+    //intCurrentPosition += masterTime->elapsed();
+	intCurrentPosition = masterTime->elapsed() + intStopPosition;
+	emit signalParent(intCurrentPosition);
 }
 
 void Timer::startMasterTimer() {
-//    startTimer(1);
-    masterTimer->start();
-    masterTime->restart();
+	if (isActive()) {
+		stopMasterTimer();
+	} else {
+		start();
+		masterTime->restart();
+	}
 }
 
 void Timer::stopMasterTimer() {
-    masterTimer->stop();
+    stop();
+	intStopPosition = intCurrentPosition;
+}
+
+void Timer::resetTimer() {
+	intCurrentPosition = 0;
+	intStopPosition = 0;
 }

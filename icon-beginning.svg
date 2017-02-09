@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="307px" height="259px" viewBox="0 0 307 259" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 42 (36781) - http://www.bohemiancoding.com/sketch -->
+    <title>icon-begining</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="play/ic_launcher_APP" transform="translate(-103.000000, -127.000000)">
+            <g id="icon-begining" transform="translate(103.000000, 127.000000)">
+                <polygon id="icon-play-copy" fill="#D8D8D8" transform="translate(177.500000, 129.500000) rotate(-90.000000) translate(-177.500000, -129.500000) " points="177.5 0 307 259 48 259"></polygon>
+                <path d="M24,0.5 L24,258.879566" id="line-left-copy" stroke="#D8D8D8" stroke-width="48"></path>
+            </g>
+        </g>
+    </g>
+</svg>

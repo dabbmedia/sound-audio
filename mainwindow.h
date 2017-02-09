@@ -1,33 +1,31 @@
 #pragma once
 
-#include "timer.h"
+#include "timelineeditor.h"
 
 #include <QApplication>
 #include <QFrame>
+#include <QLCDNumber>
 #include <QMainWindow>
 #include <QObject>
 #include <QTime>
-
-//namespace Ui {
-//    class MainWindow;
-//}
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
 
     public:
         MainWindow(QWidget *parent = 0);
+		TimelineEditor *widgetTlEditor;
+		QWidget *widgetMainControls;
+		QLCDNumber *lcdTimer;
 
     private slots:
-        void startMainTimer();
-        void stopMainTimer();
+		void updateLcd(int intPos);
         void toggleStatusbar();
 
     private:
         void createMainMenu();
-        QWidget* createMainPlaybackControls();
+        void createMainPlaybackControls();
         QFrame* createUpperFrame();
         QFrame* createTimelineFrame();
         QAction *viewst;
-        Timer *masterTimer;
 };

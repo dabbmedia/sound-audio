@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="188px" height="259px" viewBox="0 0 188 259" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 42 (36781) - http://www.bohemiancoding.com/sketch -->
+    <title>icon-pause</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="play/ic_launcher_APP" transform="translate(-162.000000, -127.000000)" stroke="#D8D8D8" stroke-width="48">
+            <g id="icon-pause" transform="translate(162.000000, 127.000000)">
+                <path d="M24,0.5 L24,258.879566" id="line-left"></path>
+                <path d="M164,0.5 L164,258.879566" id="line-right"></path>
+            </g>
+        </g>
+    </g>
+</svg>

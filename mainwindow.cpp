@@ -1,17 +1,19 @@
 #include "mainwindow.h"
 #include "resourcebrowser.h"
 #include "timelineeditor.h"
-#include "timer.h"
 
 #include <QFormLayout>
 #include <QFrame>
+#include <QGraphicsView>
 #include <QGridLayout>
 #include <QHBoxLayout>
+#include <QLCDNumber>
 #include <QLineEdit>
 #include <QMenu>
 #include <QMenuBar>
 #include <QObject>
 #include <QPushButton>
+#include <QShortcut>
 #include <QSplitter>
 #include <QStatusBar>
 #include <QTime>
@@ -21,11 +23,14 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent) {
 
+	widgetTlEditor = new TimelineEditor;
+
     createMainMenu();
 
     /* Layout */
     /*Main Controls layout*/
-    QWidget *widgetMainControls = createMainPlaybackControls();
+	widgetMainControls = new QWidget;
+	createMainPlaybackControls();
 
     QFrame *frameUpper = createUpperFrame();
     QFrame *frameTimelines = createTimelineFrame();
@@ -61,7 +66,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 void MainWindow::createMainMenu() {
     QAction *newa = new QAction("&New", this);
-    newa->setShortcut(tr("CTRL+N"));
+    newa->setShortcut(QKeySequence(tr("CTRL+N", "File|New")));
     QAction *open = new QAction("&Open", this);
     open->setShortcut(tr("CTRL+O"));
     QAction *quit = new QAction("&Quit", this);
@@ -87,37 +92,44 @@ void MainWindow::createMainMenu() {
     connect(quit, &QAction::triggered, qApp, &QApplication::quit);
 }
 
-void MainWindow::startMainTimer() {
-    masterTimer->startMasterTimer();
-}
+void MainWindow::createMainPlaybackControls() {
+	//QHBoxLayout *hbox = new QHBoxLayout(this);
+	//hbox->setContentsMargins(10, 2, 0, 0);
 
-void MainWindow::stopMainTimer() {
-    masterTimer->stopMasterTimer();
-}
+	lcdTimer = new QLCDNumber;
+	lcdTimer->setSegmentStyle(QLCDNumber::Flat);
+	lcdTimer->setDigitCount(12);
+	lcdTimer->display("00:00:00.000");
 
-QWidget* MainWindow::createMainPlaybackControls() {
-    QPushButton *btnBegin = new QPushButton("|<", this);
+    QPushButton *btnBegin = new QPushButton(this);
     btnBegin->setFixedSize(24, 24);
-//    connect(btnBegin, &QPushButton::clicked, qApp, &QApplication::quit);
+	btnBegin->setIcon(QIcon(":/icon-beginning.svg"));
+	btnBegin->setIconSize(QSize(10, 10));
+	btnBegin->setShortcut(Qt::CTRL + Qt::Key_Left);
+	connect(btnBegin, SIGNAL(clicked()), widgetTlEditor, SLOT(resetMainTimer()));
 
-    QPushButton *btnStop = new QPushButton("X", this);
+    QPushButton *btnStop = new QPushButton(this);
     btnStop->setFixedSize(24, 24);
-    connect(btnStop, SIGNAL (clicked()), this, SLOT (stopMainTimer()));
+	btnStop->setIcon(QIcon(":/icon-stop.svg"));
+	btnStop->setIconSize(QSize(8, 8));
+    connect(btnStop, SIGNAL(clicked()), widgetTlEditor, SLOT (stopMainTimer()));
 
-    QPushButton *btnPlay = new QPushButton(">", this);
+    QPushButton *btnPlay = new QPushButton(this);
     btnPlay->setFixedSize(24, 24);
-    connect(btnPlay, SIGNAL (clicked()), this, SLOT (startMainTimer()));
+	btnPlay->setIcon(QIcon(":/icon-play.svg"));
+	btnPlay->setIconSize(QSize(8, 8));
+	btnPlay->setShortcut(tr("SPACE"));
+    connect(btnPlay, SIGNAL(clicked()), widgetTlEditor, SLOT (startMainTimer()));
 
-    QPushButton *btnRecord = new QPushButton("O", this);
+    QPushButton *btnRecord = new QPushButton(this);
     btnRecord->setFixedSize(24, 24);
+	btnRecord->setIcon(QIcon(":/icon-record.svg"));
+	btnRecord->setIconSize(QSize(8, 8));
 //    connect(btnRecord, &QPushButton::clicked, qApp, &QApplication::quit);
 
-    masterTimer = new Timer;
-
-    QWidget *widgetMainControls = new QWidget;
     QHBoxLayout *hboxMainControls = new QHBoxLayout(widgetMainControls);
 //    hboxMainControls->setSpacing(8);
-    hboxMainControls->addWidget(masterTimer);
+    hboxMainControls->addWidget(lcdTimer);
     hboxMainControls->addWidget(btnBegin);
     hboxMainControls->addWidget(btnStop);
     hboxMainControls->addWidget(btnPlay);
@@ -125,9 +137,8 @@ QWidget* MainWindow::createMainPlaybackControls() {
     hboxMainControls->setAlignment(Qt::AlignLeft);
     hboxMainControls->addStretch(1);
     hboxMainControls->setContentsMargins(0, 0, 0, 0);
-    widgetMainControls->setFixedHeight(36);
 
-    return widgetMainControls;
+    widgetMainControls->setFixedHeight(36);
 }
 
 QFrame* MainWindow::createUpperFrame() {
@@ -180,12 +191,20 @@ QFrame* MainWindow::createTimelineFrame() {
     frameTimelines->setFrameShape(QFrame::StyledPanel);
 
     /* Add timeline editor */
-    TimelineEditor *widgetTlEditor = new TimelineEditor;
-    vboxTimelines->addWidget(widgetTlEditor->getTimelineEditor());
+	connect(widgetTlEditor, SIGNAL(signalDisplay(int)), this, SLOT(updateLcd(int)));
+    vboxTimelines->addWidget(widgetTlEditor);
 
     frameTimelines->setLayout(vboxTimelines);
 
     return frameTimelines;
+}
+
+void MainWindow::updateLcd(int intPos) {
+	qDebug() << "MainWindow::updateLcd";
+	QTime t = QTime(0, 0, 0, 0).addMSecs(intPos);
+	QString stringElapsed = t.toString("hh:mm:ss.zzz");
+
+	lcdTimer->display(stringElapsed);
 }
 
 void MainWindow::toggleStatusbar() {

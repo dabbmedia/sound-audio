@@ -1,21 +1,34 @@
 #ifndef TIMELINEEDITOR_H
 #define TIMELINEEDITOR_H
 
+#include "timeline.h"
+
+#include <QVBoxLayout>
 #include <QWidget>
 
 class TimelineEditor : public QWidget
 {
     Q_OBJECT
-public:
-    explicit TimelineEditor(QWidget *parent = 0);
-    QWidget * getTimelineEditor();
+	public:
+		explicit TimelineEditor(QWidget *parent = 0);
+		Timeline *currentTimeline;
+		int intCurrentPosition;
 
-protected:
-    QWidget *widgetTimelineEditor;
+	protected:
+		QVBoxLayout *vboxTimelineEditorContainer;
+		void createToolBar();
+		void createTracksLayout();
 
-signals:
+	signals:
+		void signalDisplay(int intPos);
 
-public slots:
+	public slots :
+		void zoomOut();
+		void zoomIn();
+		void setCurrentPosition(int intPos);
+		void startMainTimer();
+		void stopMainTimer();
+		void resetMainTimer();
 };
 
 #endif // TIMELINEEDITOR_H

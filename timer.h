@@ -1,31 +1,28 @@
 #ifndef TIMER_H
 #define TIMER_H
 
-#include <QLabel>
-#include <QLCDNumber>
-#include <QLineEdit>
-#include <QObject>
 #include <QTime>
 #include <QTimer>
 #include <QWidget>
 
-class Timer : public QWidget
+class Timer : public QTimer
 {
     Q_OBJECT
 
     public:
         Timer(QWidget *parent = 0);
-        QLCDNumber *lcdTimer;
-        void startMasterTimer();
-        void stopMasterTimer();
+		QTime *masterTime;
+		int intCurrentPosition;
+		int intStopPosition;
 
-    protected:
-        QTime *masterTime;
-        QTimer *masterTimer;
-//        void timerEvent(QTimerEvent *e);
+	public slots:
+		void startMasterTimer();
+		void stopMasterTimer();
+		void resetTimer();
+		void advanceTimer();
 
-    protected slots:
-        void advanceTimeline();
+	signals:
+		void signalParent(int);
 
 };
 
