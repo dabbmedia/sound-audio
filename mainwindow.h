@@ -7,6 +7,7 @@
 #include <QLCDNumber>
 #include <QMainWindow>
 #include <QObject>
+#include <QAction>
 #include <QTime>
 
 class MainWindow : public QMainWindow {
@@ -14,6 +15,9 @@ class MainWindow : public QMainWindow {
 
     public:
         MainWindow(QWidget *parent = 0);
+		~MainWindow();
+		void writeSettings();
+		void readSettings();
 		TimelineEditor *widgetTlEditor;
 		QWidget *widgetMainControls;
 		QLCDNumber *lcdTimer;
@@ -21,6 +25,7 @@ class MainWindow : public QMainWindow {
     private slots:
 		void updateLcd(int intPos);
         void toggleStatusbar();
+		void newProject();
 
     private:
         void createMainMenu();
@@ -28,4 +33,7 @@ class MainWindow : public QMainWindow {
         QFrame* createUpperFrame();
         QFrame* createTimelineFrame();
         QAction *viewst;
+
+	protected:
+		void closeEvent(QCloseEvent *event) override;
 };

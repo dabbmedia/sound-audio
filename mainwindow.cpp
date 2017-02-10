@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "projectsettings.h"
 #include "resourcebrowser.h"
 #include "timelineeditor.h"
 
@@ -17,11 +18,16 @@
 #include <QSplitter>
 #include <QStatusBar>
 #include <QTime>
+#include <QtWidgets>
 #include <QVBoxLayout>
 #include <QtDebug>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent) {
+
+	QCoreApplication::setOrganizationName("Dabb Media");
+	QCoreApplication::setOrganizationDomain("www.dabbmedia.com");
+	QCoreApplication::setApplicationName("SoundAudio");
 
 	widgetTlEditor = new TimelineEditor;
 
@@ -62,14 +68,26 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Set QWidget as the central layout of the main window
     setCentralWidget(window);
+
+	readSettings();
+}
+
+MainWindow::~MainWindow() {
+	close();
 }
 
 void MainWindow::createMainMenu() {
     QAction *newa = new QAction("&New", this);
     newa->setShortcut(QKeySequence(tr("CTRL+N", "File|New")));
+	
+	QAction *newProject = new QAction("&New Project", this);
+	newProject->setShortcut(QKeySequence(tr("CTRL+SHIFT+N")));
+	connect(newProject, &QAction::triggered, this, &MainWindow::newProject);
+
     QAction *open = new QAction("&Open", this);
     open->setShortcut(tr("CTRL+O"));
-    QAction *quit = new QAction("&Quit", this);
+    
+	QAction *quit = new QAction("&Quit", this);
     quit->setShortcut(tr("CTRL+Q"));
 
     viewst = new QAction("&View statusbar", this);
@@ -79,6 +97,7 @@ void MainWindow::createMainMenu() {
     QMenu *file;
     file = menuBar()->addMenu("&File");
     file->addAction(newa);
+	file->addAction(newProject);
     file->addAction(open);
     file->addSeparator();
 
@@ -93,9 +112,6 @@ void MainWindow::createMainMenu() {
 }
 
 void MainWindow::createMainPlaybackControls() {
-	//QHBoxLayout *hbox = new QHBoxLayout(this);
-	//hbox->setContentsMargins(10, 2, 0, 0);
-
 	lcdTimer = new QLCDNumber;
 	lcdTimer->setSegmentStyle(QLCDNumber::Flat);
 	lcdTimer->setDigitCount(12);
@@ -200,7 +216,6 @@ QFrame* MainWindow::createTimelineFrame() {
 }
 
 void MainWindow::updateLcd(int intPos) {
-	qDebug() << "MainWindow::updateLcd";
 	QTime t = QTime(0, 0, 0, 0).addMSecs(intPos);
 	QString stringElapsed = t.toString("hh:mm:ss.zzz");
 
@@ -216,4 +231,35 @@ void MainWindow::toggleStatusbar() {
 
       statusBar()->hide();
   }
+}
+
+void MainWindow::newProject() {
+	ProjectSettings *projectSettings = new ProjectSettings(this);
+	projectSettings->show();
+}
+
+void MainWindow::writeSettings() {
+	QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
+
+	settings.beginGroup("MainWindow");
+	settings.setValue("timeline_position", widgetTlEditor->intCurrentPosition);
+	settings.endGroup();
+}
+
+void MainWindow::readSettings() {
+	
+	QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
+
+	settings.beginGroup("MainWindow");
+	widgetTlEditor->currentTimeline->setCurrentPosition(settings.value("timeline_position", 0).toInt());
+	settings.endGroup();
+}
+
+/**
+ * event not triggered when click Quit from menu (or CTRL-Q),
+ * only when clicking the x
+ */
+void MainWindow::closeEvent(QCloseEvent *event) {
+	writeSettings();
+	event->accept();
 }

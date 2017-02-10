@@ -38,8 +38,6 @@
 **
 ****************************************************************************/
 
-//#include <QGraphicsScene>
-//#include <QGraphicsView>
 #include <QApplication>
 #include <QStyleFactory>
 #include <QtWidgets>
