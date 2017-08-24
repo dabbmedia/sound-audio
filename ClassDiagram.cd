@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="TimelineMarker">
+    <Position X="12" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABgCAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>timelinemarker.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TimelineTickSegment">
+    <Position X="10.25" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABgAAEAAAAAAAAAAAgCAAAAAAAAAAAAAAAAAAAEAAAA=</HashCode>
+      <FileName>timelineticksegment.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MainWindow">
+    <Position X="0.5" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEACEAEgIQAQgCACAACQAQAAAAAAIAAAMAIAI=</HashCode>
+      <FileName>mainwindow.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ResourceBrowser" Collapsed="true">
+    <Position X="4.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAEAAAACAAAAEAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>resourcebrowser.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Styles" Collapsed="true">
+    <Position X="2.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>styles.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Timeline">
+    <Position X="8.25" Y="1.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABDAAAAAAgCAICQgIAgAgIQAAAiBgIYAAA=</HashCode>
+      <FileName>timeline.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TimelineEditor">
+    <Position X="6.25" Y="1.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAACAgAAAEADAAAAAAhAgICQAAAAAAgAAAAAAgAgAAA=</HashCode>
+      <FileName>timelineeditor.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Timer">
+    <Position X="10.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAAAAAAAIAAAAAAAAAAAAQAAAAAAAAQAAgAAAAAAA=</HashCode>
+      <FileName>timer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TrackControlsTimeline">
+    <Position X="6.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABgAAAAAAAAAAAACAgAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>trackcontrolstimeline.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Track">
+    <Position X="4.5" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QIEKhwEAAAgCABQACA0CAACAAAUBAAACABAAAAAQAIA=</HashCode>
+      <FileName>track.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Project">
+    <Position X="4.5" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAgQBQAAgAACBAAAgCCAASAAAEAAAABAAEAAAAAAA=</HashCode>
+      <FileName>project.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ProjectSettings">
+    <Position X="2.75" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAAAgAAAAgAAAAAAAAAggABAAAAFAAAAAAAAA=</HashCode>
+      <FileName>projectsettings.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QAudioLevel">
+    <Position X="2.75" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAAAABAABAAAAAAAAAAAAAAAAAAAAAgAAAA=</HashCode>
+      <FileName>qaudiolevel.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

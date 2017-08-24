@@ -1,23 +1,26 @@
 #pragma once
 
+#include "project.h"
+
 #include <QDialog>
 #include <QLineEdit>
-#include <QXmlStreamWriter>
 
 class ProjectSettings : public QDialog
 {
 	Q_OBJECT
 
 public:
-	ProjectSettings(QWidget *parent);
+	ProjectSettings(Project *currentProject, QWidget *parent = 0);
 	~ProjectSettings();
-	void newProject(QString dirName);
-	QXmlStreamWriter xml;
 	QString fileName;
 	QLineEdit *lineEditName;
 	QLineEdit *lineEditLocation;
+	Project *project;
 
 private slots:
 	void chooseProjectFolder();
 	void saveProject();
+
+signals:
+	void signalProjectSaved();
 };

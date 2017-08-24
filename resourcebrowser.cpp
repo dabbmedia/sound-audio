@@ -1,29 +1,28 @@
 #include "resourcebrowser.h"
 
+#include <QCoreApplication>
+#include <QList>
+#include <QMainWindow>
+#include <QSettings>
 #include <QTabWidget>
 #include <QTreeWidget>
 #include <QVBoxLayout>
+#include <QWidget>
+#include <QtDebug>
 
-ResourceBrowser::ResourceBrowser(QWidget *parent) : QWidget(parent)
+ResourceBrowser::ResourceBrowser(QList<Project *> listProjects, QWidget *parent) : QWidget(parent)
 {
-    widgetResourceBrowser = new QWidget;
+	getResourceBrowser();
+	displayProjectTree(listProjects);
 }
 
-QWidget * ResourceBrowser::getResourceBrowser() {
-    QTabWidget *tabWidgetResourceBrowser = new QTabWidget(this);
-
-    /* Tab Projects */
-    QTreeWidget *treeWidget = new QTreeWidget();
-    treeWidget->setColumnCount(1);
-    QList<QTreeWidgetItem *> items;
-    for (int i = 0; i < 10; ++i)
-        items.append(new QTreeWidgetItem((QTreeWidget*)0, QStringList(QString("item: %1").arg(i))));
-    treeWidget->insertTopLevelItems(0, items);
-
-    QVBoxLayout *vboxTabProjects = new QVBoxLayout();
+void ResourceBrowser::getResourceBrowser() {
+	QTabWidget *tabWidgetResourceBrowser = new QTabWidget(this);
+	
+	/* Tab Projects */
+	vboxTabProjects = new QVBoxLayout();
     vboxTabProjects->setSpacing(0);
     vboxTabProjects->setContentsMargins(0, 0, 0, 0);
-    vboxTabProjects->addWidget(treeWidget);
 
     QWidget *widgetTabProjects = new QWidget;
     widgetTabProjects->setLayout(vboxTabProjects);
@@ -69,9 +68,49 @@ QWidget * ResourceBrowser::getResourceBrowser() {
     vboxResourceBrowserContainer->setContentsMargins(0, 0, 0, 0);
     vboxResourceBrowserContainer->addWidget(tabWidgetResourceBrowser);
 
-    widgetResourceBrowser->setLayout(vboxResourceBrowserContainer);
+    /*widgetResourceBrowser->setLayout(vboxResourceBrowserContainer);
     widgetResourceBrowser->setObjectName("widgetResourceBrowser");
-    widgetResourceBrowser->setStyleSheet("QWidget#widgetResourceBrowser { border: 0; }");
+    widgetResourceBrowser->setStyleSheet("QWidget#widgetResourceBrowser { border: 0; }");*/
+	setLayout(vboxResourceBrowserContainer);
+	setObjectName("widgetResourceBrowser");
+	setStyleSheet("QWidget#widgetResourceBrowser { border: 0; }");
 
-    return widgetResourceBrowser;
+    //return widgetResourceBrowser;
+}
+
+void ResourceBrowser::readProjectSettings() {
+
+	/*QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
+
+	int size = settings.beginReadArray("projects");
+	for (int i = 0; i < size; ++i) {
+		settings.setArrayIndex(i);
+		Project *project = new Project(settings.value("projectFile").toString());
+		listProjects.append(project);
+	}
+	settings.endArray();*/
+}
+
+void ResourceBrowser::displayProjectTree(QList<Project *> listProjects) {
+	if (treeProjects) {
+		vboxTabProjects->removeWidget(treeProjects);
+	}
+
+	treeProjects = new QTreeWidget();
+	treeProjects->setColumnCount(1);
+	treeProjects->setHeaderHidden(true);
+
+	QList<QTreeWidgetItem *> items;
+	for (int i = 0; i < listProjects.size(); ++i) {
+		QTreeWidgetItem *itemProject = new QTreeWidgetItem((QTreeWidget*)0);
+		Project *project = listProjects.at(i);
+		QString projectName = project->name;
+		itemProject->setText(0, projectName);
+		items.append(itemProject);
+	}
+
+	//treeProjects->clear();
+	treeProjects->insertTopLevelItems(0, items);
+
+	vboxTabProjects->addWidget(treeProjects);
 }

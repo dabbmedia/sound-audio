@@ -4,9 +4,11 @@
 #include "timelinemarker.h"
 #include "timelineticksegment.h"
 #include "timer.h"
+#include "track.h"
 
 #include <QGraphicsScene>
 #include <QGraphicsView>
+#include <QLinkedList>
 #include <QSlider>
 #include <QThread>
 #include <QWidget>
@@ -22,15 +24,19 @@ class Timeline : public QGraphicsView
 		QThread timerThread;
 		TimelineMarker *timelineMarker;
 		TimelineTickSegment *tickSegment;
+		QLinkedList<Track *> trackList;
+		QGraphicsScene scene;
+		Timer *masterTimer;
 		int intTickInterval;
 		int intCurrentPosition;
 		qreal realScale;
 
 	signals:
-		void signalDisplay(int intPos);
+		void signalDisplay();
 		void signalTimerStart();
 		void signalTimerStop();
 		void signalTimerReset();
+		void signalTrackAdded();
 
 	public slots :
 		void zoomIn();
@@ -39,11 +45,10 @@ class Timeline : public QGraphicsView
 		void stopMainTimer();
 		void resetMainTimer();
 		void advanceTimeline(int);
+		void addTrack();
 
 	protected:
 		void createTicks();
-		Timer *masterTimer;
-		QGraphicsScene scene;
 };
 
 #endif // TIMELINE_H

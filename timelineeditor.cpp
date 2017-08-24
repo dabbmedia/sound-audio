@@ -1,21 +1,36 @@
+#include "project.h"
 #include "timelineeditor.h"
 #include "timeline.h"
+#include "track.h"
 
+#include <QApplication>
+#include <QBrush>
 #include <QComboBox>
+#include <QGraphicsRectItem>
+#include <QLineEdit>
+#include <QLinkedList>
+#include <QMainWindow>
+#include <QPen>
 #include <QPushButton>
+#include <QRectF>
+#include <QRegularExpression>
 #include <QScrollBar>
+#include <QSettings>
 #include <QSplitter>
 #include <QTabWidget>
 #include <QToolBar>
 #include <QToolButton>
 #include <QVBoxLayout>
+#include <QWidget>
 #include <QtDebug>
 
 TimelineEditor::TimelineEditor(QWidget *parent) : QWidget(parent)
 {
-    vboxTimelineEditorContainer = new QVBoxLayout();
+	vboxTimelineEditorContainer = new QVBoxLayout();
     vboxTimelineEditorContainer->setSpacing(0);
     vboxTimelineEditorContainer->setContentsMargins(0, 0, 0, 0);
+
+	currentTimeline = new Timeline(this);
 
 	createToolBar();
 
@@ -39,11 +54,11 @@ void TimelineEditor::createToolBar() {
 	btnClipSplit->setToolTip("Split");
 	//    connect(btnClipSplit, SIGNAL (clicked()), this, SLOT (stopMainTimer()));
 
-	QToolButton *btnAddTimeline = new QToolButton(this);
-	btnAddTimeline->setFixedSize(QSize(32, 32));
-	btnAddTimeline->setIcon(QIcon(":/icon-add.svg"));
-	btnAddTimeline->setToolTip("Add Timeline");
-	//    connect(btnClipSelect, SIGNAL (clicked()), this, SLOT (stopMainTimer()));
+	btnAddTrack = new QToolButton(this);
+	btnAddTrack->setFixedSize(QSize(32, 32));
+	btnAddTrack->setIcon(QIcon(":/icon-add.svg"));
+	btnAddTrack->setToolTip("Add Track");
+	//connect(btnAddTrack, SIGNAL (clicked()), currentTimeline, SLOT (addTrack()));
 
 	QToolButton *btnZoomOut = new QToolButton(this);
 	btnZoomOut->setText("-");
@@ -65,7 +80,7 @@ void TimelineEditor::createToolBar() {
 	toolBarTimelineEditor->setIconSize(QSize(12, 12));
 	toolBarTimelineEditor->addWidget(btnClipSelect);
 	toolBarTimelineEditor->addWidget(btnClipSplit);
-	toolBarTimelineEditor->addWidget(btnAddTimeline);
+	toolBarTimelineEditor->addWidget(btnAddTrack);
 	toolBarTimelineEditor->addSeparator();
 	toolBarTimelineEditor->addWidget(btnZoomOut);
 	toolBarTimelineEditor->addWidget(btnZoomIn);
@@ -74,17 +89,25 @@ void TimelineEditor::createToolBar() {
 }
 
 void TimelineEditor::createTracksLayout() {
-	QVBoxLayout *vboxTrackNameFrame = new QVBoxLayout();
+	vboxTrackNameFrame = new QVBoxLayout();
 	vboxTrackNameFrame->setSpacing(0);
 	vboxTrackNameFrame->setContentsMargins(0, 0, 0, 0);
+	vboxTrackNameFrame->setAlignment(Qt::AlignTop);
+
+	//add track name header
+	QWidget *trackNameHeader = new QWidget;
+	trackNameHeader->setContentsMargins(0, 0, 0, 0);
+	trackNameHeader->setStyleSheet("QWidget { border: 0; background-color: #333333; }");
+	trackNameHeader->setFixedHeight(24);
+	vboxTrackNameFrame->addWidget(trackNameHeader);
 	
-	QVBoxLayout *vboxTimelineFrame = new QVBoxLayout();
+	vboxTimelineFrame = new QVBoxLayout();
 	vboxTimelineFrame->setSpacing(0);
 	vboxTimelineFrame->setContentsMargins(0, 0, 0, 0);
 	vboxTimelineFrame->setAlignment(Qt::AlignTop);
 
-	currentTimeline = new Timeline;
-	connect(currentTimeline, SIGNAL(signalDisplay(int)), this, SLOT(setCurrentPosition(int)));
+	//connect(currentTimeline, SIGNAL(signalDisplay(int)), this, SLOT(setCurrentPosition(int)));
+	//connect(currentTimeline, SIGNAL(signalTrackAdded(QWidget *)), this, SLOT(updateTracksDisplay(QWidget *)));
 	//tabWidgetTimelineEditor->addTab(currentTimeline, "Master Timeline");
 	vboxTimelineFrame->addWidget(currentTimeline);
 	currentTimeline->horizontalScrollBar()->setValue(1);
@@ -106,6 +129,15 @@ void TimelineEditor::createTracksLayout() {
 	vboxTimelineEditorContainer->addWidget(splitterTimeline);
 }
 
+void TimelineEditor::addTrack(int newTrackIndex, Track *track) {
+	qDebug() << "TimelineEditor::addTrack called, adding track controls, then track timeline";
+	vboxTrackNameFrame->addWidget(track->getTrackControlsTimelineWidget());
+
+	QRectF rectTrackTimeline(0, ((newTrackIndex) * 48) - 164, currentTimeline->tickSegment->intWidth, 48);
+	QGraphicsRectItem *graphicsRectTrackTimeline = currentTimeline->scene.addRect(rectTrackTimeline, QPen("#666666"), QBrush("#444444"));
+	graphicsRectTrackTimeline->setZValue(newTrackIndex);
+}
+
 void TimelineEditor::zoomOut() {
 	currentTimeline->zoomOut();
 }
@@ -116,10 +148,11 @@ void TimelineEditor::zoomIn() {
 
 void TimelineEditor::setCurrentPosition(int intPos) {
 	intCurrentPosition = intPos;
-	emit signalDisplay(intPos);
 }
 
 void TimelineEditor::startMainTimer() {
+	//if record button pressed and track armed,
+	//start armed track's audioRecorder recording
 	currentTimeline->startMainTimer();
 }
 

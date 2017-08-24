@@ -18,7 +18,7 @@ Timer::Timer(QWidget *parent) : QTimer(parent)
 void Timer::advanceTimer() {
     //intCurrentPosition += masterTime->elapsed();
 	intCurrentPosition = masterTime->elapsed() + intStopPosition;
-	emit signalParent(intCurrentPosition);
+	emit signalTimerAdvanced(intCurrentPosition);
 }
 
 void Timer::startMasterTimer() {

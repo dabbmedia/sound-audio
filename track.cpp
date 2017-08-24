@@ -1,10 +1,24 @@
 #include "track.h"
+#include "qaudiolevel.h"
 
+#include <QAudio>
+#include <QAudioEncoderSettings>
+#include <QAudioOutput>
 #include <QAudioProbe>
+#include <QAudioRecorder>
+#include <QComboBox>
+#include <QDateTime>
+#include <QDir>
 #include <QGraphicsItem>
+#include <QHBoxLayout>
+#include <QLineEdit>
 #include <QMultimedia>
-#include <QtDebug>
+#include <QObject>
+#include <QPushButton>
 #include <QUrl>
+#include <QVideoEncoderSettings>
+#include <QWidget>
+#include <QtDebug>
 
 static qreal getPeakValue(const QAudioFormat &format);
 static QVector<qreal> getBufferLevels(const QAudioBuffer &buffer);
@@ -12,9 +26,27 @@ static QVector<qreal> getBufferLevels(const QAudioBuffer &buffer);
 template <class T>
 static QVector<qreal> getBufferLevels(const T *buffer, int frames, int channels);
 
-Track::Track(QObject *parent) : QObject(parent)
+Track::Track(trackTypes trackType, QString projectAudioPath, QObject *parent) : QObject(parent)
 {
-	
+	name = "test track";
+	audioRecorder = new QAudioRecorder(this);
+	probe = new QAudioProbe;
+	connect(probe, SIGNAL(audioBufferProbed(QAudioBuffer)), this, SLOT(processBuffer(QAudioBuffer)));
+	probe->setSource(audioRecorder);
+
+	foreach(const QString &codecName, audioRecorder->supportedAudioCodecs()) {
+		if (codecName.contains("wav", Qt::CaseInsensitive)) {
+			sCodec = codecName;
+		}
+	}
+
+	foreach(int sampleRate, audioRecorder->supportedAudioSampleRates()) {
+		intSampleRate = sampleRate;
+	}
+
+	intBitRate = 96000;
+	intChannelCount = 1;
+	setOutputLocation(projectAudioPath);
 }
 
 Track::~Track()
@@ -24,12 +56,70 @@ Track::~Track()
 }
 
 QStringList Track::getAudioDevices() {
-	audioRecorder = new QAudioRecorder(this);
-	probe = new QAudioProbe;
-	connect(probe, SIGNAL(audioBufferProbed(QAudioBuffer)), this, SLOT(processBuffer(QAudioBuffer)));
-	probe->setSource(audioRecorder);
-
 	return audioRecorder->audioInputs();
+}
+
+QWidget * Track::getTrackControlsTimelineWidget() {
+	trackControls = new QWidget;
+	trackControls->setFixedHeight(48);
+	trackControls->setMinimumSize(QSize(120, 48));
+	trackControls->setContentsMargins(2, 2, 2, 2);
+
+	QLineEdit *lineEditTrackName = new QLineEdit;
+	lineEditTrackName->setText("Track Name");
+
+	btnArm = new QPushButton("R", trackControls);
+	btnArm->setFixedSize(16, 16);
+	btnArm->setFont(QFont("Helvetica", 6));
+	btnArm->setCheckable(true);
+	//connect(btnArm, SIGNAL(clicked()), this, SLOT(toggleRecord()));
+
+	btnMute = new QPushButton("M", trackControls);
+	btnMute->setFixedSize(16, 16);
+	btnMute->setFont(QFont("Helvetica", 6));
+
+	btnSolo = new QPushButton("S", trackControls);
+	btnSolo->setFixedSize(16, 16);
+	btnSolo->setFont(QFont("Helvetica", 6));
+
+	QComboBox *trackInputDevice = new QComboBox;
+	trackInputDevice->setFont(QFont("Helvetica", 6));
+	trackInputDevice->setToolTip("Input Device");
+
+	QStringList devices = getAudioDevices();
+	for (int i = 0; i < devices.size(); i++)
+	{
+		trackInputDevice->insertItem(i, devices.at(i));
+	}
+
+	hboxTrackName = new QHBoxLayout;
+	hboxTrackName->setContentsMargins(0, 0, 0, 0);
+	hboxTrackName->setAlignment(Qt::AlignTop);
+	hboxTrackName->addWidget(lineEditTrackName);
+	hboxTrackName->addWidget(btnArm);
+	hboxTrackName->addWidget(btnMute);
+	hboxTrackName->addWidget(btnSolo);
+	hboxTrackName->addWidget(trackInputDevice);
+
+	/*QHBoxLayout *hboxTrackInput = new QHBoxLayout;
+	hboxTrackInput->setContentsMargins(0, 0, 0, 0);
+	hboxTrackInput->setAlignment(Qt::AlignTop);
+	hboxTrackInput->addWidget(trackInputDevice);*/
+
+	vboxTrackName = new QVBoxLayout;
+	vboxTrackName->setContentsMargins(0, 0, 0, 0);
+	vboxTrackName->setAlignment(Qt::AlignTop);
+	//vboxTrackName->SetMinimumSize(QSize(120, 48));
+	vboxTrackName->addLayout(hboxTrackName);
+	//vboxTrackName->addLayout(hboxTrackInput);
+
+	trackControls->setLayout(vboxTrackName);
+
+	level = new QAudioLevel(trackControls);
+	audioLevels.append(level);
+	trackControls->layout()->addWidget(level);
+
+	return trackControls;
 }
 
 void Track::updateProgress(qint64 duration)
@@ -50,12 +140,12 @@ void Track::updateStatus(QMediaRecorder::Status status)
 		statusMessage = tr("Recording to %1").arg(audioRecorder->actualLocation().toString());
 		break;
 	case QMediaRecorder::PausedStatus:
-		//clearAudioLevels();
+		clearAudioLevels();
 		statusMessage = tr("Paused");
 		break;
 	case QMediaRecorder::UnloadedStatus:
 	case QMediaRecorder::LoadedStatus:
-		//clearAudioLevels();
+		clearAudioLevels();
 		statusMessage = tr("Stopped");
 	default:
 		break;
@@ -87,14 +177,17 @@ void Track::onStateChanged(QMediaRecorder::State state)
 
 void Track::toggleRecord()
 {
+	qDebug() << "toggleREcord called";
 	if (audioRecorder->state() == QMediaRecorder::StoppedState) {
+		sAudioInput = audioRecorder->defaultAudioInput();
 		audioRecorder->setAudioInput(sAudioInput);
 
-		QAudioEncoderSettings settings;
+		settings;
+		
 		settings.setCodec(sCodec);
 		settings.setSampleRate(intSampleRate);
 		settings.setBitRate(intBitRate);
-		settings.setChannelCount(intChannelCount);
+		settings.setChannelCount(intChannelCount); //output channel count?
 		settings.setQuality(QMultimedia::EncodingQuality(QMultimedia::NormalQuality));
 		settings.setEncodingMode(QMultimedia::ConstantQualityEncoding); //QMultimedia::ConstantBitRateEncoding
 
@@ -116,12 +209,74 @@ void Track::togglePause()
 		audioRecorder->record();
 }
 
-void Track::setOutputLocation()
-{
-	/*QString fileName = QFileDialog::getSaveFileName();
-	audioRecorder->setOutputLocation(QUrl::fromLocalFile(fileName));*/
+void Track::togglePlay() {
+	audioOutput = new QAudioOutput;
 
-	QString fileName = "default-track.wav"; //change to auto-increment name and save in project audio folder
+	QAudioFormat format;
+	// Set up the format, eg.
+	format.setSampleRate(intSampleRate);
+	format.setChannelCount(intChannelCount);
+	format.setSampleSize(8);
+	format.setCodec("audio/pcm"); //sCodec
+	format.setByteOrder(QAudioFormat::LittleEndian);
+	format.setSampleType(QAudioFormat::UnSignedInt);
+
+	for (audioFileIndex = 0; audioFileIndex < audioFiles.size(); ++audioFileIndex) {
+		if (!audioFiles.at(audioFileIndex).file.isEmpty()) {
+			sourceFile.setFileName(audioFiles.at(audioFileIndex).file);
+			sourceFile.open(QIODevice::ReadOnly);
+
+			audioOutput = new QAudioOutput(format, this);
+			connect(audioOutput, SIGNAL(stateChanged(QAudio::State)), this, SLOT(handleStateChanged(QAudio::State)));
+			audioOutput->start(&sourceFile);
+		}
+		else {
+			qDebug() << "could not play audio file, file name empty";
+		}
+	}
+}
+
+void Track::handleStateChanged(QAudio::State newState)
+{
+	//QFile sourceFile;
+	switch (newState) {
+	case QAudio::IdleState:
+		// Finished playing (no more data)
+		audioOutput->stop();
+		//sourceFile.setFileName(audioFiles.at(audioFileIndex).file);
+		sourceFile.close();
+		delete audioOutput;
+		break;
+
+	case QAudio::StoppedState:
+		// Stopped for other reasons
+		if (audioOutput->error() != QAudio::NoError) {
+			// Error handling
+			qDebug() << "error stopping audio playback";
+		}
+		break;
+
+	default:
+		// ... other cases as appropriate
+		break;
+	}
+}
+
+void Track::setOutputLocation(QString projectAudioPath)
+{
+	QDir audioPath(projectAudioPath);
+	if (!audioPath.exists()) {
+		audioPath.mkdir(projectAudioPath);
+	}
+
+	QString fileExtension = ".wav";
+	QString fileName = projectAudioPath + "/" + name.replace(" ", "-") + "-" + QString::number(QDateTime::currentMSecsSinceEpoch()) + fileExtension;
+	
+	AudioFile audioFile;
+	audioFile.startPos = 0;
+	audioFile.file = fileName;
+	audioFiles << audioFile;
+	
 	audioRecorder->setOutputLocation(QUrl::fromLocalFile(fileName));
 	outputLocationSet = true;
 }
@@ -133,8 +288,8 @@ void Track::displayErrorMessage()
 
 void Track::clearAudioLevels()
 {
-	/*for (int i = 0; i < audioLevels.size(); ++i)
-		audioLevels.at(i)->setLevel(0);*/
+	for (int i = 0; i < audioLevels.size(); ++i)
+		audioLevels.at(i)->setLevel(0);
 }
 
 // This function returns the maximum possible sample value for a given audio format
@@ -249,13 +404,13 @@ void Track::processBuffer(const QAudioBuffer& buffer)
 		qDeleteAll(audioLevels);
 		audioLevels.clear();
 		for (int i = 0; i < buffer.format().channelCount(); ++i) {
-			QAudioLevel *level = new QAudioLevel(ui->centralwidget);
+			level = new QAudioLevel(trackControls);
 			audioLevels.append(level);
-			ui->levelsLayout->addWidget(level);
+			trackControls->layout()->addWidget(level);
 		}
-	}
+	}*/
 
 	QVector<qreal> levels = getBufferLevels(buffer);
 	for (int i = 0; i < levels.count(); ++i)
-		audioLevels.at(i)->setLevel(levels.at(i));*/
+		audioLevels.at(i)->setLevel(levels.at(i));
 }

@@ -1,21 +1,26 @@
 #ifndef RESOURCEBROWSER_H
 #define RESOURCEBROWSER_H
 
+#include "project.h"
+
+#include <QList>
+#include <QMainWindow>
+#include <QTreeWidget>
 #include <QWidget>
 
 class ResourceBrowser : public QWidget
 {
     Q_OBJECT
 public:
-    explicit ResourceBrowser(QWidget *parent = 0);
-    QWidget * getResourceBrowser();
+    explicit ResourceBrowser(QList<Project *> listProjects, QWidget *parent = 0);
+    void getResourceBrowser();
+	void displayProjectTree(QList<Project *> listProjects);
+	QTreeWidget *treeProjects;
+	QVBoxLayout *vboxTabProjects;
 
-protected:
-    QWidget *widgetResourceBrowser;
+private:
+	void readProjectSettings();
 
-signals:
-
-public slots:
 };
 
 #endif // RESOURCEBROWSER_H

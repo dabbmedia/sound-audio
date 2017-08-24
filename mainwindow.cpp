@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "project.h"
 #include "projectsettings.h"
 #include "resourcebrowser.h"
 #include "timelineeditor.h"
@@ -10,8 +11,10 @@
 #include <QHBoxLayout>
 #include <QLCDNumber>
 #include <QLineEdit>
+#include <QList>
 #include <QMenu>
 #include <QMenuBar>
+#include <QMessageBox>
 #include <QObject>
 #include <QPushButton>
 #include <QShortcut>
@@ -29,6 +32,8 @@ MainWindow::MainWindow(QWidget *parent)
 	QCoreApplication::setOrganizationDomain("www.dabbmedia.com");
 	QCoreApplication::setApplicationName("SoundAudio");
 
+	listProjects;
+
 	widgetTlEditor = new TimelineEditor;
 
     createMainMenu();
@@ -38,8 +43,11 @@ MainWindow::MainWindow(QWidget *parent)
 	widgetMainControls = new QWidget;
 	createMainPlaybackControls();
 
-    QFrame *frameUpper = createUpperFrame();
     QFrame *frameTimelines = createTimelineFrame();
+
+	readSettings();
+
+	QFrame *frameUpper = createUpperFrame();
 
     /* Splitter for resizing Upper and Timeline sections */
     QSplitter *splitterDevTime = new QSplitter(Qt::Vertical, this);
@@ -69,7 +77,11 @@ MainWindow::MainWindow(QWidget *parent)
     // Set QWidget as the central layout of the main window
     setCentralWidget(window);
 
-	readSettings();
+	openProject();
+	//connect(this, SIGNAL(signalLoadProject()), this, SLOT(openProject()));
+	connect(widgetTlEditor->btnAddTrack, SIGNAL(clicked()), currentProject, SLOT(addTrack()));
+	connect(currentProject, SIGNAL(signalTrackAdded(int)), this, SLOT(addTrack(int)));
+	//connect(currentProject, SIGNAL(signalProjectError(QString)), this, SLOT(showErrorMessage(QString)));
 }
 
 MainWindow::~MainWindow() {
@@ -122,25 +134,29 @@ void MainWindow::createMainPlaybackControls() {
 	btnBegin->setIcon(QIcon(":/icon-beginning.svg"));
 	btnBegin->setIconSize(QSize(10, 10));
 	btnBegin->setShortcut(Qt::CTRL + Qt::Key_Left);
-	connect(btnBegin, SIGNAL(clicked()), widgetTlEditor, SLOT(resetMainTimer()));
+	//connect(btnBegin, SIGNAL(clicked()), widgetTlEditor->currentTimeline, SLOT(resetMainTimer()));
+	connect(btnBegin, SIGNAL(clicked()), this, SLOT(restart()));
 
     QPushButton *btnStop = new QPushButton(this);
     btnStop->setFixedSize(24, 24);
 	btnStop->setIcon(QIcon(":/icon-stop.svg"));
 	btnStop->setIconSize(QSize(8, 8));
-    connect(btnStop, SIGNAL(clicked()), widgetTlEditor, SLOT (stopMainTimer()));
+    //connect(btnStop, SIGNAL(clicked()), widgetTlEditor->currentTimeline, SLOT (stopMainTimer()));
+	connect(btnStop, SIGNAL(clicked()), this, SLOT(stop()));
 
     QPushButton *btnPlay = new QPushButton(this);
     btnPlay->setFixedSize(24, 24);
 	btnPlay->setIcon(QIcon(":/icon-play.svg"));
 	btnPlay->setIconSize(QSize(8, 8));
 	btnPlay->setShortcut(tr("SPACE"));
-    connect(btnPlay, SIGNAL(clicked()), widgetTlEditor, SLOT (startMainTimer()));
+    //connect(btnPlay, SIGNAL(clicked()), widgetTlEditor->currentTimeline, SLOT (startMainTimer()));
+	connect(btnPlay, SIGNAL(clicked()), this, SLOT(togglePlayRecord()));
 
-    QPushButton *btnRecord = new QPushButton(this);
+    btnRecord = new QPushButton(this);
     btnRecord->setFixedSize(24, 24);
 	btnRecord->setIcon(QIcon(":/icon-record.svg"));
 	btnRecord->setIconSize(QSize(8, 8));
+	btnRecord->setCheckable(true);
 //    connect(btnRecord, &QPushButton::clicked, qApp, &QApplication::quit);
 
     QHBoxLayout *hboxMainControls = new QHBoxLayout(widgetMainControls);
@@ -157,14 +173,60 @@ void MainWindow::createMainPlaybackControls() {
     widgetMainControls->setFixedHeight(36);
 }
 
+void MainWindow::restart() {
+	if (btnRecord->isChecked()) {
+		for (int i = 0; i < currentProject->tracks.size(); ++i) {
+			if (currentProject->tracks.at(i)->btnArm->isChecked()) {
+				currentProject->tracks.at(i)->toggleRecord();
+			}
+		}
+	}
+
+	widgetTlEditor->currentTimeline->resetMainTimer();
+
+	if (btnRecord->isChecked()) {
+		for (int i = 0; i < currentProject->tracks.size(); ++i) {
+			if (currentProject->tracks.at(i)->btnArm->isChecked()) {
+				currentProject->tracks.at(i)->toggleRecord();
+			}
+		}
+	}
+}
+
+void MainWindow::stop() {
+	if (btnRecord->isChecked()) {
+		for (int i = 0; i < currentProject->tracks.size(); ++i) {
+			if (currentProject->tracks.at(i)->btnArm->isChecked()) {
+				currentProject->tracks.at(i)->toggleRecord();
+			}
+		}
+	}
+
+	widgetTlEditor->currentTimeline->stopMainTimer();
+}
+
+void MainWindow::togglePlayRecord() {
+	for (int i = 0; i < currentProject->tracks.size(); ++i) {
+		if (btnRecord->isChecked()) {
+			if (currentProject->tracks.at(i)->btnArm->isChecked()) {
+				currentProject->tracks.at(i)->toggleRecord();
+			}
+		}
+		else /* if (!btnMute->isChecked()) */ {
+			currentProject->tracks.at(i)->togglePlay();
+		}
+	}
+
+	widgetTlEditor->currentTimeline->startMainTimer();
+}
+
 QFrame* MainWindow::createUpperFrame() {
-    ResourceBrowser *resourceBrowser = new ResourceBrowser;
-    QWidget *rbMain = resourceBrowser->getResourceBrowser();
+    resourceBrowser = new ResourceBrowser(listProjects);
 
     QVBoxLayout *vboxUpperLeft = new QVBoxLayout();
     vboxUpperLeft->setSpacing(0);
     vboxUpperLeft->setContentsMargins(0, 0, 0, 0);
-    vboxUpperLeft->addWidget(rbMain);
+    vboxUpperLeft->addWidget(resourceBrowser);
 
     QFrame *frameUpperLeft = new QFrame(this);
     frameUpperLeft->setFrameShape(QFrame::StyledPanel);
@@ -174,7 +236,7 @@ QFrame* MainWindow::createUpperFrame() {
     QGridLayout *grid = new QGridLayout();
     grid->setSpacing(2);
     grid->setContentsMargins(0, 0, 0, 0);
-//    grid->addWidget(rbMain);
+//    grid->addWidget(rbMain); //devices go here?
 
     QFrame *frameUpperRight = new QFrame(this);
     frameUpperRight->setFrameShape(QFrame::StyledPanel);
@@ -207,7 +269,7 @@ QFrame* MainWindow::createTimelineFrame() {
     frameTimelines->setFrameShape(QFrame::StyledPanel);
 
     /* Add timeline editor */
-	connect(widgetTlEditor, SIGNAL(signalDisplay(int)), this, SLOT(updateLcd(int)));
+	connect(widgetTlEditor->currentTimeline, SIGNAL(signalDisplay()), this, SLOT(updateLcd()));
     vboxTimelines->addWidget(widgetTlEditor);
 
     frameTimelines->setLayout(vboxTimelines);
@@ -215,8 +277,16 @@ QFrame* MainWindow::createTimelineFrame() {
     return frameTimelines;
 }
 
-void MainWindow::updateLcd(int intPos) {
-	QTime t = QTime(0, 0, 0, 0).addMSecs(intPos);
+void MainWindow::addTrack(int newTrackIndex) {
+	qDebug() << "Project::signalTrackAdded triggered MainWindow::addTrack1: " << newTrackIndex;
+	if (currentProject->tracks.size() > 0) {
+		widgetTlEditor->addTrack(newTrackIndex, currentProject->tracks.at(newTrackIndex));
+	}
+
+}
+
+void MainWindow::updateLcd() {
+	QTime t = QTime(0, 0, 0, 0).addMSecs(widgetTlEditor->currentTimeline->intCurrentPosition);
 	QString stringElapsed = t.toString("hh:mm:ss.zzz");
 
 	lcdTimer->display(stringElapsed);
@@ -234,7 +304,33 @@ void MainWindow::toggleStatusbar() {
 }
 
 void MainWindow::newProject() {
-	ProjectSettings *projectSettings = new ProjectSettings(this);
+	Project *project = new Project;
+	listProjects << project;
+	resourceBrowser->displayProjectTree(listProjects);
+	currentProject = project;
+	openProject();
+	openProjectSettings(project);
+}
+
+void MainWindow::openProject() {
+	// load currentProject by updating display
+
+	//refresh resourceBrowser project list
+
+	//set timeline position
+
+	//update track view
+
+}
+
+void MainWindow::openProjectSettings(Project *project) {
+	ProjectSettings *projectSettings = new ProjectSettings(project, this);
+	projectSettings->show();
+	//connect(projectSettings, SIGNAL(signalProjectSaved), this, SLOT());
+}
+
+void MainWindow::editProjectSettings(Project *project) {
+	ProjectSettings *projectSettings = new ProjectSettings(project, this);
 	projectSettings->show();
 }
 
@@ -242,17 +338,47 @@ void MainWindow::writeSettings() {
 	QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
 
 	settings.beginGroup("MainWindow");
-	settings.setValue("timeline_position", widgetTlEditor->intCurrentPosition);
+	settings.setValue("timelinePosition", widgetTlEditor->intCurrentPosition);
+	settings.setValue("currentProjectFile", currentProject->file);
 	settings.endGroup();
+
+	settings.beginWriteArray("projects");
+	for (int i = 0; i < listProjects.size(); ++i) {
+		settings.setArrayIndex(i);
+		settings.setValue("name", QVariant::fromValue(listProjects.at(i)->name));
+		settings.setValue("file", QVariant::fromValue(listProjects.at(i)->file));
+	}
+	settings.endArray();
 }
 
 void MainWindow::readSettings() {
 	
 	QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
 
+	listProjects;
+	int size = settings.beginReadArray("projects");
+	for (int i = 0; i < size; ++i) {
+		settings.setArrayIndex(i);
+		Project *project = new Project(settings.value("file").toString());
+		listProjects.append(project);
+	}
+	settings.endArray();
+
 	settings.beginGroup("MainWindow");
 	widgetTlEditor->currentTimeline->setCurrentPosition(settings.value("timeline_position", 0).toInt());
+	widgetTlEditor->currentTimeline->masterTimer->intStopPosition = settings.value("timeline_position", 0).toInt();
+
+	currentProject = new Project(settings.value("currentProjectFile", "").toString());
 	settings.endGroup();
+
+	//emit signalLoadProject();
+}
+
+void MainWindow::showErrorMessage(QString errorMessage) {
+	qDebug() << "SLOT: " << errorMessage;
+	/*QMessageBox msgBox;
+	msgBox.setText(errorMessage);
+	msgBox.exec();*/
 }
 
 /**

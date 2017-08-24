@@ -1,22 +1,25 @@
+#include "project.h"
 #include "projectsettings.h"
 
 #include <QDialog>
-#include <QFile>
+//#include <QFile>
 #include <QFileDialog>
-#include <QFileInfo>
+//#include <QFileInfo>
 #include <QFormLayout>
 #include <QLabel>
 #include <QLineEdit>
+#include <QLinkedList>
 #include <QMessageBox>
 #include <QPushButton>
 #include <QString>
 #include <QHBoxLayout>
-#include <QXmlStreamWriter>
 #include <QtDebug>
 
-ProjectSettings::ProjectSettings(QWidget *parent)
+ProjectSettings::ProjectSettings(Project *currentProject, QWidget *parent)
 	: QDialog(parent)
 {	
+	project = currentProject;
+
 	setModal(true);
 	setWindowFlags(Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::Dialog);
 	setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
@@ -27,12 +30,14 @@ ProjectSettings::ProjectSettings(QWidget *parent)
 	
 	lineEditName = new QLineEdit;
 	lineEditName->setFixedHeight(20);
+	lineEditName->setText("testing");
 
 	QLabel *labelLocation = new QLabel(tr("Location:"));
 	labelLocation->setStyleSheet("QLabel { border: 0; background-color: transparent; }");
 	
 	lineEditLocation = new QLineEdit;
 	lineEditLocation->setFixedHeight(20);
+	lineEditLocation->setText("C:/Users/Ronald/Projects/testing");
 
 	QPushButton *btnLocation = new QPushButton("...", this);
 	btnLocation->setFixedSize(QSize(24, 20));
@@ -64,44 +69,13 @@ ProjectSettings::~ProjectSettings()
 {
 }
 
-void ProjectSettings::newProject(QString dirName)
-{
-	QString fileName = dirName + "/" + lineEditName->text() + ".project";
-	QFile file(fileName);
-	if (!file.open(QFile::WriteOnly | QFile::Text)) {
-		qDebug() << "could not open file " << fileName;
-	}
-
-	xml.setDevice(&file);
-	xml.setAutoFormatting(true);
-	xml.writeStartDocument();
-
-	xml.writeStartElement("project");
-
-	QFileInfo fileInfo(fileName);
-	QString strProjectName = fileInfo.baseName();
-	QString strProjectPath = fileInfo.absolutePath();
-
-	if (strProjectName.isEmpty() == false && strProjectPath.isEmpty() == false) {
-		xml.writeStartElement("name");
-		xml.writeCharacters(strProjectName);
-		xml.writeEndElement(); //name
-		
-		xml.writeStartElement("path");
-		xml.writeCharacters(strProjectPath);
-		xml.writeEndElement(); //path
-	}
-
-	xml.writeEndDocument();
-}
-
 void ProjectSettings::chooseProjectFolder() {
 	/*QString fileName =
 		QFileDialog::getSaveFileName(this, tr("New Project"),
 			QDir::currentPath(),
 			tr("SoundAudio Project Files (*.project)"));*/
 	QString dirName =
-		QFileDialog::getExistingDirectory(this, tr("New Project"), QDir::currentPath());
+		QFileDialog::getExistingDirectory(this, tr("New Project"), QDir::currentPath() + "../");
 	if (dirName.isEmpty())
 		return;
 
@@ -125,6 +99,15 @@ void ProjectSettings::saveProject() {
 		return;
 	}
 
-	newProject(lineEditLocation->text());
+	project->name = lineEditName->text();
+	project->file = lineEditLocation->text() + QString("/") + lineEditName->text() + ".project";
+
+	QFileInfo fileInfo(project->file);
+	project->path = fileInfo.absolutePath();
+
+	project->writeProjectSettings();
+
+	emit signalProjectSaved();
+
 	accept();
 }

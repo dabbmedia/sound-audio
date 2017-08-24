@@ -141,6 +141,15 @@
     <ClCompile Include="Debug\moc_mainwindow.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="Debug\moc_project.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_projectsettings.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_qaudiolevel.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Debug\moc_resourcebrowser.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
@@ -156,6 +165,12 @@
     <ClCompile Include="Debug\moc_timer.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="Debug\moc_track.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_trackcontrolstimeline.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="GeneratedFiles\qrc_resources.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
       </PrecompiledHeader>
@@ -164,7 +179,19 @@
     </ClCompile>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mainwindow.cpp" />
+    <ClCompile Include="project.cpp" />
+    <ClCompile Include="projectsettings.cpp" />
+    <ClCompile Include="qaudiolevel.cpp" />
     <ClCompile Include="Release\moc_mainwindow.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Release\moc_project.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Release\moc_projectsettings.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Release\moc_qaudiolevel.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Release\moc_resourcebrowser.cpp">
@@ -182,11 +209,21 @@
     <ClCompile Include="Release\moc_timer.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="Release\moc_track.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Release\moc_trackcontrolstimeline.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="resourcebrowser.cpp" />
     <ClCompile Include="styles.cpp" />
     <ClCompile Include="timeline.cpp" />
     <ClCompile Include="timelineeditor.cpp" />
+    <ClCompile Include="timelinemarker.cpp" />
+    <ClCompile Include="timelineticksegment.cpp" />
     <ClCompile Include="timer.cpp" />
+    <ClCompile Include="track.cpp" />
+    <ClCompile Include="trackcontrolstimeline.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.h">
@@ -269,8 +306,13 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram.cd" />
     <None Include="icon-add.svg" />
     <None Include="icon-arrow-select.svg" />
+    <None Include="icon-beginning.svg" />
+    <None Include="icon-pause.svg" />
+    <None Include="icon-play.svg" />
+    <None Include="icon-record.svg" />
     <None Include="icon-split.svg" />
     <CustomBuild Include="resources.qrc">
       <FileType>Document</FileType>
@@ -283,6 +325,7 @@
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Rcc%27ing %(Identity)...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\qrc_%(Filename).cpp;%(Outputs)</Outputs>
     </CustomBuild>
+    <None Include="icon-stop.svg" />
   </ItemGroup>
   <ItemGroup>
     <None Include="icon-add.svg">
@@ -297,6 +340,60 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="trackcontrolstimeline.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Moc%27ing trackcontrolstimeline.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DWIN64 -DQT_MULTIMEDIA_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB "-I." "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtMultimedia" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtWidgets" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtGui" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtANGLE" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtNetwork" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtCore" "-I.\debug" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\mkspecs\win32-msvc2015"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Moc%27ing trackcontrolstimeline.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DWIN64 -DQT_NO_DEBUG -DQT_MULTIMEDIA_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DNDEBUG "-I." "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtMultimedia" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtWidgets" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtGui" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtANGLE" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtNetwork" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtCore" "-I.\release" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\mkspecs\win32-msvc2015"</Command>
+    </CustomBuild>
+    <CustomBuild Include="track.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Moc%27ing track.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DWIN64 -DQT_MULTIMEDIA_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB "-I." "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtMultimedia" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtWidgets" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtGui" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtANGLE" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtNetwork" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtCore" "-I.\debug" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\mkspecs\win32-msvc2015"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Moc%27ing track.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DWIN64 -DQT_NO_DEBUG -DQT_MULTIMEDIA_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DNDEBUG "-I." "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtMultimedia" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtWidgets" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtGui" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtANGLE" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtNetwork" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtCore" "-I.\release" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\mkspecs\win32-msvc2015"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+    </CustomBuild>
+    <CustomBuild Include="project.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Moc%27ing project.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DWIN64 -DQT_MULTIMEDIA_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB "-I." "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtMultimedia" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtWidgets" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtGui" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtANGLE" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtNetwork" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtCore" "-I.\debug" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\mkspecs\win32-msvc2015"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Moc%27ing project.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DWIN64 -DQT_NO_DEBUG -DQT_MULTIMEDIA_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DNDEBUG "-I." "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtMultimedia" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtWidgets" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtGui" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtANGLE" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtNetwork" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtCore" "-I.\release" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\mkspecs\win32-msvc2015"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+    </CustomBuild>
+    <CustomBuild Include="projectsettings.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Moc%27ing projectsettings.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DWIN64 -DQT_MULTIMEDIA_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB "-I." "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtMultimedia" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtWidgets" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtGui" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtANGLE" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtNetwork" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtCore" "-I.\debug" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\mkspecs\win32-msvc2015"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Moc%27ing projectsettings.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DWIN64 -DQT_NO_DEBUG -DQT_MULTIMEDIA_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DNDEBUG "-I." "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtMultimedia" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtWidgets" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtGui" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtANGLE" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtNetwork" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtCore" "-I.\release" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\mkspecs\win32-msvc2015"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\moc.exe;%(FullPath);$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\moc.exe;%(FullPath);$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+    </CustomBuild>
+    <CustomBuild Include="qaudiolevel.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Moc%27ing qaudiolevel.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DWIN64 -DQT_MULTIMEDIA_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB "-I." "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtMultimedia" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtWidgets" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtGui" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtANGLE" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtNetwork" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtCore" "-I.\debug" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\mkspecs\win32-msvc2015"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Moc%27ing qaudiolevel.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DWIN64 -DQT_NO_DEBUG -DQT_MULTIMEDIA_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DNDEBUG "-I." "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtMultimedia" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtWidgets" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtGui" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtANGLE" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtNetwork" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\include\QtCore" "-I.\release" "-I.\..\..\..\..\qt\qt5.8.0\5.8\msvc2015_64\mkspecs\win32-msvc2015"</Command>
+    </CustomBuild>
+    <ClInclude Include="timelinemarker.h" />
+    <ClInclude Include="timelineticksegment.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

@@ -19,10 +19,12 @@ class Timer : public QTimer
 		void startMasterTimer();
 		void stopMasterTimer();
 		void resetTimer();
+
+	private slots:
 		void advanceTimer();
 
 	signals:
-		void signalParent(int);
+		void signalTimerAdvanced(int);
 
 };
 

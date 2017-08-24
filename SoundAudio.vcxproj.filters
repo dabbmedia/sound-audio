@@ -78,12 +78,6 @@
     <ClCompile Include="timer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Debug\moc_mainwindow.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="Release\moc_mainwindow.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="Debug\moc_resourcebrowser.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
@@ -102,12 +96,6 @@
     <ClCompile Include="Release\moc_timeline.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="Debug\moc_timelineeditor.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="Release\moc_timelineeditor.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="Debug\moc_timer.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
@@ -116,6 +104,69 @@
     </ClCompile>
     <ClCompile Include="GeneratedFiles\qrc_resources.cpp">
       <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="timelinemarker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="timelineticksegment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_projectsettings.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_projectsettings.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="projectsettings.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="project.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="track.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_qaudiolevel.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_qaudiolevel.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="qaudiolevel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_trackcontrolstimeline.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_trackcontrolstimeline.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="trackcontrolstimeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_track.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_track.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_project.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_project.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_mainwindow.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_mainwindow.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_timelineeditor.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_timelineeditor.cpp">
+      <Filter>Generated Files\Release</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -135,6 +186,21 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="timer.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="projectsettings.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="project.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="track.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="qaudiolevel.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="trackcontrolstimeline.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
@@ -162,6 +228,24 @@
     <None Include="icon-add.svg" />
     <None Include="icon-arrow-select.svg" />
     <None Include="icon-split.svg" />
+    <None Include="icon-add.svg" />
+    <None Include="icon-arrow-select.svg" />
+    <None Include="icon-split.svg" />
+    <None Include="icon-add.svg" />
+    <None Include="icon-arrow-select.svg" />
+    <None Include="icon-split.svg" />
+    <None Include="icon-pause.svg" />
+    <None Include="icon-play.svg" />
+    <None Include="icon-stop.svg" />
+    <None Include="icon-beginning.svg" />
+    <None Include="icon-record.svg" />
+    <None Include="icon-add.svg" />
+    <None Include="icon-arrow-select.svg" />
+    <None Include="icon-split.svg" />
+    <None Include="icon-add.svg" />
+    <None Include="icon-arrow-select.svg" />
+    <None Include="icon-split.svg" />
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
     <None Include="icon-add.svg">
@@ -173,5 +257,13 @@
     <None Include="icon-split.svg">
       <Filter>Distribution Files</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="timelinemarker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="timelineticksegment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
