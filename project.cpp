@@ -14,12 +14,7 @@ Project::Project(QObject *parent)
 
 Project::Project(QString fileName)
 {
-	/*QString fileName =
-		QFileDialog::getOpenFileName(this, tr("Open Bookmark File"),
-			QDir::currentPath(),
-			tr("XBEL Files (*.xbel *.xml)"));*/
-
-	if (fileName.isEmpty())
+    if (fileName.isEmpty())
 		return;
 
 	QFile fileFile(fileName);
@@ -27,23 +22,16 @@ Project::Project(QString fileName)
 		emit signalProjectError(tr("Cannot read project file %1:\n%2.").arg(fileName).arg(fileFile.errorString()));
 		qDebug() << "Cannot read file " << fileName << ":" << fileFile.errorString();
 		return;
-	}
-	else {
-		//qDebug() << "Can read file " << fileName;
-		//emit signalProjectError("Can read project file.");
-	}
+    }
 
 	xmlRead.setDevice(&fileFile);
 
 	if (xmlRead.readNextStartElement()) {
-		//if (xmlRead.name() == "project" && xmlRead.attributes().value("version") == "1.0")
 		if (xmlRead.name() == "project")
 			readXML();
 		else
 			xmlRead.raiseError(QObject::tr("The file is not a SoundAudio version 0.1 project file."));
-	}
-
-	//qDebug() << "Project file xml read error: " << !xmlRead.error();
+    }
 }
 
 Project::~Project()
@@ -51,16 +39,14 @@ Project::~Project()
 }
 
 void Project::addTrack() {
-	Track *track = new Track(audio, path + "/audio", this);
+    Track *track = new Track(audio, path + "/audio", this);
 	
 	if (track) {
-		tracks << track;
-		int size = tracks.size();
-		emit signalTrackAdded((size == 0) ? 0 : size - 1);
+        tracks << track;
 		writeProjectSettings();
 	}
 	else {
-		qDebug() << "error creating track";
+        qDebug() << "Project::addTrack: error creating track";
 	}
 }
 
@@ -136,15 +122,7 @@ void Project::writeProjectSettings()
 		xmlWrite.writeStartElement("tracks");
 		xmlWrite.writeCharacters(path);
 		for (int i = 0; i < tracks.size(); ++i) {
-			Track *track = tracks.at(i);
-			/*const QMetaObject *metaobject = track->metaObject();
-			int count = metaobject->propertyCount();
-			for (int i = 0; i<count; ++i) {
-				QMetaProperty metaproperty = metaobject->property(i);
-				const char *name = metaproperty.name();
-				QVariant value = track->property(name);
-				qDebug() << "track property: " << name << ", value: " << value;
-			}*/
+            Track *track = tracks.at(i);
 
 			xmlWrite.writeStartElement("track");
 			xmlWrite.writeCharacters(track->name);

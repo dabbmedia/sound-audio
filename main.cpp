@@ -40,11 +40,11 @@
 
 #include <QApplication>
 #include <QStyleFactory>
+#include <QThread>
 #include <QtWidgets>
 
 #include "mainwindow.h"
 #include "styles.h"
-#include "timelineeditor.h"
 
 int main(int argv, char **args)
 {

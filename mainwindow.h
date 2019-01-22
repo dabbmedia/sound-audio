@@ -1,10 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "project.h"
-#include "resourcebrowser.h"
-#include "timelineeditor.h"
-
 #include <QAction>
 #include <QApplication>
 #include <QFrame>
@@ -14,6 +10,11 @@
 #include <QObject>
 #include <QTime>
 #include <QWidget>
+
+#include "project.h"
+#include "resourcebrowser.h"
+#include "timelineeditor.h"
+#include "timer.h"
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -26,10 +27,14 @@ class MainWindow : public QMainWindow {
 		TimelineEditor *widgetTlEditor;
 		QWidget *widgetMainControls;
 		QLCDNumber *lcdTimer;
+        QPushButton *btnBegin;
+        QPushButton *btnStop;
+        QPushButton *btnPlay;
 		QPushButton *btnRecord;
 		QList<Project *> listProjects;
 		Project *currentProject = 0;
 		ResourceBrowser *resourceBrowser;
+        Timer *masterTimer;
 
 	public slots:
 		void updateLcd();
@@ -39,13 +44,15 @@ class MainWindow : public QMainWindow {
 		void togglePlayRecord();
 		void newProject();
 		void openProject();
-		void addTrack(int newTrackIndex);
+        void addTrack();
 		void showErrorMessage(QString errorMessage);
 
 	signals:
 		void signalLoadProject();
 
     private:
+        void setupTimer();
+        void createMainWindowLayout();
         void createMainMenu();
         void createMainPlaybackControls();
 		void openProjectSettings(Project *project);

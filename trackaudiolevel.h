@@ -5,13 +5,13 @@
 
 #include <QWidget>
 
-class QAudioLevel : public QWidget
+class TrackAudioLevel : public QWidget
 {
 	Q_OBJECT
 
 public:
-	explicit QAudioLevel(QWidget *parent = 0);
-	~QAudioLevel();
+    explicit TrackAudioLevel(QWidget *parent = 0);
+    ~TrackAudioLevel();
 
 	// Using [0; 1.0] range
 	void setLevel(qreal level);

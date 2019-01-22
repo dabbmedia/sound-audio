@@ -1,28 +1,28 @@
-#include "qaudiolevel.h"
+#include "trackaudiolevel.h"
 
 #include <QPainter>
 
-QAudioLevel::QAudioLevel(QWidget *parent)
+TrackAudioLevel::TrackAudioLevel(QWidget *parent)
 	: QWidget(parent)
 	, m_level(0.0)
 {
-	setMinimumHeight(15);
+    setMinimumHeight(8);
 	setMaximumHeight(30);
 }
 
-QAudioLevel::~QAudioLevel()
+TrackAudioLevel::~TrackAudioLevel()
 {
 }
 
-void QAudioLevel::setLevel(qreal level)
+void TrackAudioLevel::setLevel(qreal level)
 {
-	if (m_level != level) {
+    if (m_level != level) {
 		m_level = level;
 		update();
 	}
 }
 
-void QAudioLevel::paintEvent(QPaintEvent *event)
+void TrackAudioLevel::paintEvent(QPaintEvent *event)
 {
 	Q_UNUSED(event);
 

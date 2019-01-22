@@ -1,9 +1,3 @@
-#include "mainwindow.h"
-#include "project.h"
-#include "projectsettings.h"
-#include "resourcebrowser.h"
-#include "timelineeditor.h"
-
 #include <QFormLayout>
 #include <QFrame>
 #include <QGraphicsView>
@@ -25,29 +19,60 @@
 #include <QVBoxLayout>
 #include <QtDebug>
 
+#include "mainwindow.h"
+#include "project.h"
+#include "projectsettings.h"
+#include "resourcebrowser.h"
+#include "timelineeditor.h"
+#include "timer.h"
+
+// Use as a controller?
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent) {
 
 	QCoreApplication::setOrganizationName("Dabb Media");
 	QCoreApplication::setOrganizationDomain("www.dabbmedia.com");
-	QCoreApplication::setApplicationName("SoundAudio");
+    QCoreApplication::setApplicationName("SoundAudio");
 
-	listProjects;
+    setupTimer();
 
-	widgetTlEditor = new TimelineEditor;
+    createMainWindowLayout();
+
+    readSettings();
+
+    openProject();
+}
+
+MainWindow::~MainWindow() {
+	close();
+}
+
+void MainWindow::setupTimer() {
+    masterTimer = new Timer;
+    QThread timerThread;
+    masterTimer->moveToThread(&timerThread);
+    connect(&timerThread, &QThread::finished, masterTimer, &QObject::deleteLater);
+//	connect(this, &Timeline::signalTimerStart, masterTimer, &Timer::startMasterTimer);
+//	connect(this, &Timeline::signalTimerStop, masterTimer, &Timer::stopMasterTimer);
+//	connect(this, &Timeline::signalTimerReset, masterTimer, &Timer::resetTimer);
+//	connect(masterTimer, SIGNAL(signalTimerAdvanced(int)), this, SLOT(advanceTimeline(int)));
+//	timerThread.start();
+}
+
+void MainWindow::createMainWindowLayout() {
+    widgetTlEditor = new TimelineEditor;
+    connect(widgetTlEditor->btnAddTrack, SIGNAL(clicked()), this, SLOT(addTrack()));
 
     createMainMenu();
 
     /* Layout */
     /*Main Controls layout*/
-	widgetMainControls = new QWidget;
-	createMainPlaybackControls();
+    widgetMainControls = new QWidget;
+    createMainPlaybackControls();
 
     QFrame *frameTimelines = createTimelineFrame();
 
-	readSettings();
-
-	QFrame *frameUpper = createUpperFrame();
+    QFrame *frameUpper = createUpperFrame();
 
     /* Splitter for resizing Upper and Timeline sections */
     QSplitter *splitterDevTime = new QSplitter(Qt::Vertical, this);
@@ -69,23 +94,10 @@ MainWindow::MainWindow(QWidget *parent)
     vboxContainer->addLayout(vboxResizable);
     vboxContainer->setContentsMargins(0, 0, 0, 0);
 
-//    setLayout(vboxContainer);
     // Set layout in QWidget
     QWidget *window = new QWidget();
     window->setLayout(vboxContainer);
-
-    // Set QWidget as the central layout of the main window
     setCentralWidget(window);
-
-	openProject();
-	//connect(this, SIGNAL(signalLoadProject()), this, SLOT(openProject()));
-	connect(widgetTlEditor->btnAddTrack, SIGNAL(clicked()), currentProject, SLOT(addTrack()));
-	connect(currentProject, SIGNAL(signalTrackAdded(int)), this, SLOT(addTrack(int)));
-	//connect(currentProject, SIGNAL(signalProjectError(QString)), this, SLOT(showErrorMessage(QString)));
-}
-
-MainWindow::~MainWindow() {
-	close();
 }
 
 void MainWindow::createMainMenu() {
@@ -93,8 +105,7 @@ void MainWindow::createMainMenu() {
     newa->setShortcut(QKeySequence(tr("CTRL+N", "File|New")));
 	
 	QAction *newProject = new QAction("&New Project", this);
-	newProject->setShortcut(QKeySequence(tr("CTRL+SHIFT+N")));
-	connect(newProject, &QAction::triggered, this, &MainWindow::newProject);
+    newProject->setShortcut(QKeySequence(tr("CTRL+SHIFT+N")));
 
     QAction *open = new QAction("&Open", this);
     open->setShortcut(tr("CTRL+O"));
@@ -129,7 +140,7 @@ void MainWindow::createMainPlaybackControls() {
 	lcdTimer->setDigitCount(12);
 	lcdTimer->display("00:00:00.000");
 
-    QPushButton *btnBegin = new QPushButton(this);
+    btnBegin = new QPushButton(this);
     btnBegin->setFixedSize(24, 24);
 	btnBegin->setIcon(QIcon(":/icon-beginning.svg"));
 	btnBegin->setIconSize(QSize(10, 10));
@@ -137,18 +148,19 @@ void MainWindow::createMainPlaybackControls() {
 	//connect(btnBegin, SIGNAL(clicked()), widgetTlEditor->currentTimeline, SLOT(resetMainTimer()));
 	connect(btnBegin, SIGNAL(clicked()), this, SLOT(restart()));
 
-    QPushButton *btnStop = new QPushButton(this);
+    btnStop = new QPushButton(this);
     btnStop->setFixedSize(24, 24);
 	btnStop->setIcon(QIcon(":/icon-stop.svg"));
 	btnStop->setIconSize(QSize(8, 8));
     //connect(btnStop, SIGNAL(clicked()), widgetTlEditor->currentTimeline, SLOT (stopMainTimer()));
 	connect(btnStop, SIGNAL(clicked()), this, SLOT(stop()));
 
-    QPushButton *btnPlay = new QPushButton(this);
+    btnPlay = new QPushButton(this);
     btnPlay->setFixedSize(24, 24);
 	btnPlay->setIcon(QIcon(":/icon-play.svg"));
 	btnPlay->setIconSize(QSize(8, 8));
 	btnPlay->setShortcut(tr("SPACE"));
+    btnPlay->setCheckable(true);
     //connect(btnPlay, SIGNAL(clicked()), widgetTlEditor->currentTimeline, SLOT (startMainTimer()));
 	connect(btnPlay, SIGNAL(clicked()), this, SLOT(togglePlayRecord()));
 
@@ -197,7 +209,9 @@ void MainWindow::stop() {
 	if (btnRecord->isChecked()) {
 		for (int i = 0; i < currentProject->tracks.size(); ++i) {
 			if (currentProject->tracks.at(i)->btnArm->isChecked()) {
-				currentProject->tracks.at(i)->toggleRecord();
+                currentProject->tracks.at(i)->stop();
+                btnRecord->setChecked(false);
+                btnPlay->setChecked(false);
 			}
 		}
 	}
@@ -212,7 +226,7 @@ void MainWindow::togglePlayRecord() {
 				currentProject->tracks.at(i)->toggleRecord();
 			}
 		}
-		else /* if (!btnMute->isChecked()) */ {
+        else {
 			currentProject->tracks.at(i)->togglePlay();
 		}
 	}
@@ -277,12 +291,14 @@ QFrame* MainWindow::createTimelineFrame() {
     return frameTimelines;
 }
 
-void MainWindow::addTrack(int newTrackIndex) {
-	qDebug() << "Project::signalTrackAdded triggered MainWindow::addTrack1: " << newTrackIndex;
-	if (currentProject->tracks.size() > 0) {
-		widgetTlEditor->addTrack(newTrackIndex, currentProject->tracks.at(newTrackIndex));
-	}
-
+void MainWindow::addTrack() {
+    qDebug() << "MainWindow::addTrack";
+    if (currentProject) {
+        currentProject->addTrack();
+        if (currentProject->tracks.size() > 0) {
+            widgetTlEditor->addTrack(currentProject->tracks.size(), currentProject->tracks.at(currentProject->tracks.size() - 1));
+        }
+    }
 }
 
 void MainWindow::updateLcd() {
@@ -308,13 +324,17 @@ void MainWindow::newProject() {
 	listProjects << project;
 	resourceBrowser->displayProjectTree(listProjects);
 	currentProject = project;
-	openProject();
-	openProjectSettings(project);
+    openProjectSettings(project);
 }
 
 void MainWindow::openProject() {
-	// load currentProject by updating display
-
+    //if lastProject exists, set to currentProject
+    //else create a new project
+    if (currentProject->name == "") {
+        newProject();
+    } else {
+        qDebug() << "project name: " << currentProject->name;
+    }
 	//refresh resourceBrowser project list
 
 	//set timeline position
@@ -352,10 +372,8 @@ void MainWindow::writeSettings() {
 }
 
 void MainWindow::readSettings() {
-	
 	QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
 
-	listProjects;
 	int size = settings.beginReadArray("projects");
 	for (int i = 0; i < size; ++i) {
 		settings.setArrayIndex(i);
@@ -366,12 +384,11 @@ void MainWindow::readSettings() {
 
 	settings.beginGroup("MainWindow");
 	widgetTlEditor->currentTimeline->setCurrentPosition(settings.value("timeline_position", 0).toInt());
-	widgetTlEditor->currentTimeline->masterTimer->intStopPosition = settings.value("timeline_position", 0).toInt();
+//	widgetTlEditor->currentTimeline->masterTimer->intStopPosition = settings.value("timeline_position", 0).toInt();
+    masterTimer->intStopPosition = settings.value("timeline_position", 0).toInt();
 
 	currentProject = new Project(settings.value("currentProjectFile", "").toString());
-	settings.endGroup();
-
-	//emit signalLoadProject();
+    settings.endGroup();
 }
 
 void MainWindow::showErrorMessage(QString errorMessage) {

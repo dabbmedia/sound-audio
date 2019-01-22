@@ -1,12 +1,12 @@
 #ifndef PROJECT_H
 #define PROJECT_H
 
-#include "track.h"
-
 #include <QList>
 #include <QObject>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
+
+#include "track.h"
 
 class Project : public QObject
 {
@@ -36,7 +36,7 @@ protected:
 	void readTracks();
 
 public slots:
-	void addTrack();
+    void addTrack();
 
 signals:
 	void signalTrackAdded(int newTrackIndex);

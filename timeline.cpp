@@ -23,7 +23,6 @@
 Timeline::Timeline(QWidget *parent) : QGraphicsView(parent)
 {
 	//TODO: get track list from project object
-	trackList;
 
 	tickSegment = new TimelineTickSegment();
 
@@ -53,20 +52,20 @@ Timeline::Timeline(QWidget *parent) : QGraphicsView(parent)
 
 	//show();
 
-	masterTimer = new Timer;
-	masterTimer->moveToThread(&timerThread);
-	connect(&timerThread, &QThread::finished, masterTimer, &QObject::deleteLater);
-	connect(this, &Timeline::signalTimerStart, masterTimer, &Timer::startMasterTimer);
-	connect(this, &Timeline::signalTimerStop, masterTimer, &Timer::stopMasterTimer);
-	connect(this, &Timeline::signalTimerReset, masterTimer, &Timer::resetTimer);
-	connect(masterTimer, SIGNAL(signalTimerAdvanced(int)), this, SLOT(advanceTimeline(int)));
-	timerThread.start();
+//	masterTimer = new Timer;
+//	masterTimer->moveToThread(&timerThread);
+//	connect(&timerThread, &QThread::finished, masterTimer, &QObject::deleteLater);
+//	connect(this, &Timeline::signalTimerStart, masterTimer, &Timer::startMasterTimer);
+//	connect(this, &Timeline::signalTimerStop, masterTimer, &Timer::stopMasterTimer);
+//	connect(this, &Timeline::signalTimerReset, masterTimer, &Timer::resetTimer);
+//	connect(masterTimer, SIGNAL(signalTimerAdvanced(int)), this, SLOT(advanceTimeline(int)));
+//	timerThread.start();
 }
 
-Timeline::~Timeline() {
-	timerThread.quit();
-	timerThread.wait();
-}
+//Timeline::~Timeline() {
+//	timerThread.quit();
+//	timerThread.wait();
+//}
 
 void Timeline::createTicks() {
 	//TimelineTickSegment tickSegment;

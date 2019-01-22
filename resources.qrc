@@ -8,5 +8,7 @@
         <file>icon-stop.svg</file>
         <file>icon-beginning.svg</file>
         <file>icon-record.svg</file>
+        <file>icon-zoom-in.svg</file>
+        <file>icon-zoom-out.svg</file>
     </qresource>
 </RCC>

@@ -58,23 +58,28 @@ void TimelineEditor::createToolBar() {
 	btnAddTrack->setFixedSize(QSize(32, 32));
 	btnAddTrack->setIcon(QIcon(":/icon-add.svg"));
 	btnAddTrack->setToolTip("Add Track");
-	//connect(btnAddTrack, SIGNAL (clicked()), currentTimeline, SLOT (addTrack()));
 
 	QToolButton *btnZoomOut = new QToolButton(this);
-	btnZoomOut->setText("-");
+    btnZoomOut->setText("Zoom Out -");
 	btnZoomOut->setFixedSize(QSize(32, 32));
 	btnZoomOut->setStyleSheet("QToolButton { text-align: right; }");
 	btnZoomOut->setToolTip("Zoom In");
-	btnZoomOut->setShortcut(Qt::CTRL + Qt::Key_Minus);
-	connect(btnZoomOut, SIGNAL(clicked()), this, SLOT(zoomOut()));
+    btnZoomOut->setShortcut(Qt::CTRL + Qt::Key_Minus);
+    QPixmap pmZoomOut(":/icon-zoom-out.svg");
+    QIcon iconZoomOut(pmZoomOut);
+    btnZoomOut->setIcon(iconZoomOut);
+    connect(btnZoomOut, SIGNAL(clicked()), currentTimeline, SLOT(zoomOut()));
 
 	QToolButton *btnZoomIn = new QToolButton(this);
-	btnZoomIn->setText("+");
+    btnZoomIn->setText("Zoom In +");
 	btnZoomIn->setFixedSize(QSize(32, 32));
 	btnZoomIn->setStyleSheet("QToolButton { right: 0; }");
 	btnZoomIn->setToolTip("Zoom Out");
 	btnZoomIn->setShortcut(Qt::CTRL + Qt::Key_Plus);
-	connect(btnZoomIn, SIGNAL(clicked()), this, SLOT(zoomIn()));
+    QPixmap pmZoomIn(":/icon-zoom-in.svg");
+    QIcon iconZoomIn(pmZoomIn);
+    btnZoomIn->setIcon(iconZoomIn);
+    connect(btnZoomIn, SIGNAL(clicked()), currentTimeline, SLOT(zoomIn()));
 
 	QToolBar *toolBarTimelineEditor = new QToolBar;
 	toolBarTimelineEditor->setIconSize(QSize(12, 12));
@@ -136,14 +141,6 @@ void TimelineEditor::addTrack(int newTrackIndex, Track *track) {
 	QRectF rectTrackTimeline(0, ((newTrackIndex) * 48) - 164, currentTimeline->tickSegment->intWidth, 48);
 	QGraphicsRectItem *graphicsRectTrackTimeline = currentTimeline->scene.addRect(rectTrackTimeline, QPen("#666666"), QBrush("#444444"));
 	graphicsRectTrackTimeline->setZValue(newTrackIndex);
-}
-
-void TimelineEditor::zoomOut() {
-	currentTimeline->zoomOut();
-}
-
-void TimelineEditor::zoomIn() {
-	currentTimeline->zoomIn();
 }
 
 void TimelineEditor::setCurrentPosition(int intPos) {

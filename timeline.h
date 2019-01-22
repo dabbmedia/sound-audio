@@ -3,14 +3,14 @@
 
 #include "timelinemarker.h"
 #include "timelineticksegment.h"
-#include "timer.h"
+//#include "timer.h"
 #include "track.h"
 
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QLinkedList>
 #include <QSlider>
-#include <QThread>
+//#include <QThread>
 #include <QWidget>
 
 class Timeline : public QGraphicsView
@@ -18,15 +18,15 @@ class Timeline : public QGraphicsView
     Q_OBJECT
 	public:
 		explicit Timeline(QWidget *parent = 0);
-		Timeline::~Timeline();
+//        Timeline::~Timeline();
 		void setCurrentPosition(int);
 		QWidget *widgetTimeline;
-		QThread timerThread;
+//		QThread timerThread;
 		TimelineMarker *timelineMarker;
 		TimelineTickSegment *tickSegment;
 		QLinkedList<Track *> trackList;
 		QGraphicsScene scene;
-		Timer *masterTimer;
+//		Timer *masterTimer;
 		int intTickInterval;
 		int intCurrentPosition;
 		qreal realScale;

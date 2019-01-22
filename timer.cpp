@@ -1,9 +1,9 @@
-#include "timer.h"
-
 #include <QApplication>
 #include <QWidget>
 #include <QTime>
 #include <QTimer>
+
+#include "timer.h"
 
 Timer::Timer(QWidget *parent) : QTimer(parent)
 {

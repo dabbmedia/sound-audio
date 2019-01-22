@@ -33,7 +33,13 @@ SOURCES += main.cpp \
     timeline.cpp \
     timelineeditor.cpp \
     resourcebrowser.cpp \
-    timelineslider.cpp
+    timelinemarker.cpp \
+    timelineticksegment.cpp \
+    track.cpp \
+    trackcontrolstimeline.cpp \
+    project.cpp \
+    projectsettings.cpp \
+    trackaudiolevel.cpp
 
 HEADERS  += \
     mainwindow.h \
@@ -42,7 +48,13 @@ HEADERS  += \
     timeline.h \
     timelineeditor.h \
     resourcebrowser.h \
-    timelineslider.h
+    project.h \
+    projectsettings.h \
+    timelinemarker.h \
+    timelineticksegment.h \
+    track.h \
+    trackcontrolstimeline.h \
+    trackaudiolevel.h
 
 FORMS    +=
 
@@ -54,7 +66,12 @@ QT+=widgets
 DISTFILES += \
     icon-add.svg \
     icon-arrow-select.svg \
-    icon-split.svg
+    icon-split.svg \
+    icon-beginning.svg \
+    icon-pause.svg \
+    icon-play.svg \
+    icon-record.svg \
+    icon-stop.svg
 
 RESOURCES += \
     resources.qrc

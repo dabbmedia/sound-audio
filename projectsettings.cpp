@@ -37,7 +37,7 @@ ProjectSettings::ProjectSettings(Project *currentProject, QWidget *parent)
 	
 	lineEditLocation = new QLineEdit;
 	lineEditLocation->setFixedHeight(20);
-	lineEditLocation->setText("C:/Users/Ronald/Projects/testing");
+    lineEditLocation->setText(QDir::homePath());
 
 	QPushButton *btnLocation = new QPushButton("...", this);
 	btnLocation->setFixedSize(QSize(24, 20));
@@ -70,12 +70,13 @@ ProjectSettings::~ProjectSettings()
 }
 
 void ProjectSettings::chooseProjectFolder() {
-	/*QString fileName =
-		QFileDialog::getSaveFileName(this, tr("New Project"),
-			QDir::currentPath(),
-			tr("SoundAudio Project Files (*.project)"));*/
-	QString dirName =
-		QFileDialog::getExistingDirectory(this, tr("New Project"), QDir::currentPath() + "../");
+    QString defaultDirectory = QDir::homePath();
+//    defaultDirectory.append("/Documents/Projects");
+
+    QString dirName = QFileDialog::getExistingDirectory(this,
+                                                        tr("New Project"),
+                                                        defaultDirectory,
+                                                        QFileDialog::ShowDirsOnly);
 	if (dirName.isEmpty())
 		return;
 
@@ -87,7 +88,7 @@ void ProjectSettings::chooseProjectFolder() {
 		return;
 	}
 
-	lineEditLocation->setText(dirName);
+    lineEditLocation->setText(defaultDirectory);
 }
 
 void ProjectSettings::saveProject() {

@@ -25,9 +25,7 @@ class TimelineEditor : public QWidget
 		void createToolBar();
 		void createTracksLayout();
 
-	public slots :
-		void zoomOut();
-		void zoomIn();
+    public slots :
 		void setCurrentPosition(int intPos);
 		void startMainTimer();
 		void stopMainTimer();
