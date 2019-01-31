@@ -1,29 +1,33 @@
-#include "project.h"
-#include "trackaudiolevel.h"
-#include "track.h"
-
 #include <QAudio>
 #include <QAudioDeviceInfo>
 #include <QAudioEncoderSettings>
+#include <QAudioFormat>
 #include <QAudioOutput>
 #include <QAudioProbe>
 #include <QAudioRecorder>
 #include <QComboBox>
+#include <QDataStream>
 #include <QDateTime>
 #include <QDir>
 #include <QGraphicsItem>
 #include <QHBoxLayout>
+#include <QIODevice>
 #include <QLineEdit>
 #include <QMultimedia>
 #include <QObject>
 #include <QPainter>
 #include <QPushButton>
 #include <QSlider>
+#include <QString>
 #include <QUrl>
 #include <QVideoEncoderSettings>
 #include <QWidget>
 #include <QtDebug>
 #include <qendian.h>
+
+#include "project.h"
+#include "trackaudiolevel.h"
+#include "track.h"
 
 static qreal getPeakValue(const QAudioFormat &format);
 static QVector<qreal> getBufferLevels(const QAudioBuffer &buffer);
@@ -171,6 +175,7 @@ Track::Track(trackTypes trackType, QString projectAudioPath, QObject *parent) : 
 	intBitRate = 96000;
 	intChannelCount = 1;
 //	setOutputLocation(projectAudioPath);
+    audioSavePath = projectAudioPath + "/" + name.replace(" ", "-") + "-";
 
     format.setSampleRate(8000);//intSampleRate
     format.setChannelCount(1);//intChannelCount
@@ -353,58 +358,81 @@ void Track::setAudioLevel(qreal level) {
 
 void Track::toggleRecord()
 {
-	qDebug() << "toggleREcord called";
-    if (audioRecorder && audioRecorder->state() != QMediaRecorder::RecordingState) {
-//		sAudioInput = audioRecorder->defaultAudioInput();
-//        audioRecorder->setAudioInput(sAudioInput);
-		audioRecorder->record();
-	}
-	else {
-		audioRecorder->stop();
-	}
+    qDebug() << "toggleRecord called";
+    QString fileExtension = ".wav";
+    QString fileName = audioSavePath + QString::number(QDateTime::currentMSecsSinceEpoch()) + fileExtension;
+    QFile file(fileName);
+    qDebug() << fileName;
+    file.open(QIODevice::WriteOnly);
+    QDataStream out(&file);
+
+    m_audioInput->suspend();
+    auto io = m_audioInput->start();
+    connect(io, &QIODevice::readyRead,
+        [&, io]() {
+            qint64 len = m_audioInput->bytesReady();
+            const int BufferSize = 4096;
+            if (len > BufferSize)
+                len = BufferSize;
+
+            QByteArray buffer(len, 0);
+            qint64 l = io->read(buffer.data(), len);
+            if (l > 0) {
+                qDebug() << "Track::toggleRecord buffers: ";
+                qDebug() << buffer.constData();
+                m_audioInfo->write(buffer.constData(), l);
+                out << buffer.constData();
+            }
+        });
 }
 
 void Track::stop()
 {
     qDebug() << "Track::stop called";
-    if (audioRecorder->state() == QMediaRecorder::PausedState || audioRecorder->state() == QMediaRecorder::RecordingState) {
-        audioRecorder->stop();
+//    if (audioRecorder->state() == QMediaRecorder::PausedState || audioRecorder->state() == QMediaRecorder::RecordingState) {
+//        audioRecorder->stop();
+//    }
+    if (m_audioInput->state() == QAudio::ActiveState) {
+        m_audioInput->suspend();
+        if (btnArm->isChecked()) {
+            armTrack();
+        }
     }
 }
 
 void Track::togglePause()
 {
-	if (audioRecorder->state() != QMediaRecorder::PausedState)
-		audioRecorder->pause();
-	else
-		audioRecorder->record();
+//	if (audioRecorder->state() != QMediaRecorder::PausedState)
+//		audioRecorder->pause();
+//	else
+//		audioRecorder->record();
 }
 
 void Track::togglePlay() {
-	audioOutput = new QAudioOutput;
+//	audioOutput = new QAudioOutput;
 
-	QAudioFormat format;
-	// Set up the format, eg.
-	format.setSampleRate(intSampleRate);
-	format.setChannelCount(intChannelCount);
-	format.setSampleSize(8);
-	format.setCodec("audio/pcm"); //sCodec
-	format.setByteOrder(QAudioFormat::LittleEndian);
-	format.setSampleType(QAudioFormat::UnSignedInt);
+//	QAudioFormat format;
+//	// Set up the format, eg.
+//	format.setSampleRate(intSampleRate);
+//	format.setChannelCount(intChannelCount);
+//	format.setSampleSize(8);
+//	format.setCodec("audio/pcm"); //sCodec
+//	format.setByteOrder(QAudioFormat::LittleEndian);
+//	format.setSampleType(QAudioFormat::UnSignedInt);
 
-	for (audioFileIndex = 0; audioFileIndex < audioFiles.size(); ++audioFileIndex) {
-		if (!audioFiles.at(audioFileIndex).file.isEmpty()) {
-			sourceFile.setFileName(audioFiles.at(audioFileIndex).file);
-			sourceFile.open(QIODevice::ReadOnly);
+//	for (audioFileIndex = 0; audioFileIndex < audioFiles.size(); ++audioFileIndex) {
+//		if (!audioFiles.at(audioFileIndex).file.isEmpty()) {
+//			sourceFile.setFileName(audioFiles.at(audioFileIndex).file);
+//			sourceFile.open(QIODevice::ReadOnly);
 
-			audioOutput = new QAudioOutput(format, this);
-			connect(audioOutput, SIGNAL(stateChanged(QAudio::State)), this, SLOT(handleStateChanged(QAudio::State)));
-			audioOutput->start(&sourceFile);
-		}
-		else {
-			qDebug() << "could not play audio file, file name empty";
-		}
-	}
+//			audioOutput = new QAudioOutput(format, this);
+//			connect(audioOutput, SIGNAL(stateChanged(QAudio::State)), this, SLOT(handleStateChanged(QAudio::State)));
+//			audioOutput->start(&sourceFile);
+//		}
+//		else {
+//			qDebug() << "could not play audio file, file name empty";
+//		}
+//	}
 }
 
 void Track::handleStateChanged(QAudio::State newState)

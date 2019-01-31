@@ -13,6 +13,7 @@
 #include <QObject>
 #include <QPushButton>
 #include <QSlider>
+#include <QString>
 #include <QWidget>
 
 class TrackAudioLevel;
@@ -23,7 +24,7 @@ class Project;
 enum trackTypes { audio, midi, video };
 struct AudioFile {
 	int startPos;
-	QString file;
+    QString file;
 };
 
 class TrackAudioInfo : public QIODevice
@@ -69,6 +70,7 @@ public:
 	QString sCodec; //remove and read from project object
 	QString sQuality; //remove and read from project object
 	QString sEncodingMode; //remove and read from project object
+    QString audioSavePath;
 	QHBoxLayout *hboxTrackName;
 	QVBoxLayout *vboxTrackName;
 	QWidget *trackControls;

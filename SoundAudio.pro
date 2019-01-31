@@ -4,8 +4,8 @@
 #
 #-------------------------------------------------
 
-#QT       += core gui multimedia
-QT += multimedia
+QT       += core gui multimedia
+#QT += multimedia
 
 #win32:INCLUDEPATH += $$PWD
 
@@ -28,33 +28,33 @@ TEMPLATE = app
 
 SOURCES += main.cpp \
     mainwindow.cpp \
-    timer.cpp \
+    project.cpp \
+    projectsettings.cpp \
+    resourcebrowser.cpp \
     styles.cpp \
     timeline.cpp \
     timelineeditor.cpp \
-    resourcebrowser.cpp \
     timelinemarker.cpp \
     timelineticksegment.cpp \
+    timer.cpp \
     track.cpp \
-    trackcontrolstimeline.cpp \
-    project.cpp \
-    projectsettings.cpp \
-    trackaudiolevel.cpp
+    trackaudiolevel.cpp \
+    trackcontrolstimeline.cpp
 
 HEADERS  += \
     mainwindow.h \
-    timer.h \
+    project.h \
+    projectsettings.h \
+    resourcebrowser.h \
     styles.h \
     timeline.h \
     timelineeditor.h \
-    resourcebrowser.h \
-    project.h \
-    projectsettings.h \
     timelinemarker.h \
     timelineticksegment.h \
+    timer.h \
     track.h \
-    trackcontrolstimeline.h \
-    trackaudiolevel.h
+    trackaudiolevel.h \
+    trackcontrolstimeline.h
 
 FORMS    +=
 
@@ -66,12 +66,14 @@ QT+=widgets
 DISTFILES += \
     icon-add.svg \
     icon-arrow-select.svg \
-    icon-split.svg \
     icon-beginning.svg \
     icon-pause.svg \
     icon-play.svg \
     icon-record.svg \
-    icon-stop.svg
+    icon-split.svg \
+    icon-stop.svg \
+    icon-zoom-in.svg \
+    icon-zoom-out.svg
 
 RESOURCES += \
     resources.qrc
