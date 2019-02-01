@@ -74,6 +74,7 @@ TrackAudioInfo::TrackAudioInfo(const QAudioFormat &format)
             break;
         case QAudioFormat::Float:
             m_maxAmplitude = 0x7fffffff; // Kind of
+            break;
         default:
             break;
         }
@@ -161,16 +162,7 @@ qint64 TrackAudioInfo::writeData(const char *data, qint64 len)
 
 Track::Track(trackTypes trackType, QString projectAudioPath, QObject *parent) : QObject(parent)
 {
-	name = "test track";
-//	foreach(const QString &codecName, audioRecorder->supportedAudioCodecs()) {
-//		if (codecName.contains("wav", Qt::CaseInsensitive)) {
-//			sCodec = codecName;
-//		}
-//	}
-
-//	foreach(int sampleRate, audioRecorder->supportedAudioSampleRates()) {
-//		intSampleRate = sampleRate;
-//	}
+    name = "test track";
 
 	intBitRate = 96000;
 	intChannelCount = 1;

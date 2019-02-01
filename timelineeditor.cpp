@@ -137,9 +137,15 @@ void TimelineEditor::createTracksLayout() {
 void TimelineEditor::addTrack(int newTrackIndex, Track *track) {
 	qDebug() << "TimelineEditor::addTrack called, adding track controls, then track timeline";
 	vboxTrackNameFrame->addWidget(track->getTrackControlsTimelineWidget());
-
-	QRectF rectTrackTimeline(0, ((newTrackIndex) * 48) - 164, currentTimeline->tickSegment->intWidth, 48);
-	QGraphicsRectItem *graphicsRectTrackTimeline = currentTimeline->scene.addRect(rectTrackTimeline, QPen("#666666"), QBrush("#444444"));
+    //add a rectangle to the track for the wave form, track length, etc.
+    //the initial width is the width of the currnet timeline tick (based on zoom level)
+    QRectF rectTrackTimeline(0,
+                             ((newTrackIndex - 1) * 48) - 164,
+                             currentTimeline->tickSegment->intWidth,
+                             48);
+    QGraphicsRectItem *graphicsRectTrackTimeline = currentTimeline->scene.addRect(rectTrackTimeline,
+                                                                                  QPen("#666666"),
+                                                                                  QBrush("#444444"));
 	graphicsRectTrackTimeline->setZValue(newTrackIndex);
 }
 

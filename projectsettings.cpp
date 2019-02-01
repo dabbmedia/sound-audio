@@ -71,10 +71,8 @@ ProjectSettings::~ProjectSettings()
 
 void ProjectSettings::chooseProjectFolder() {
     QString defaultDirectory = QDir::homePath();
-//    defaultDirectory.append("/Documents/Projects");
-
     QString dirName = QFileDialog::getExistingDirectory(this,
-                                                        tr("New Project"),
+                                                        tr("Choose Project Directory"),
                                                         defaultDirectory,
                                                         QFileDialog::ShowDirsOnly);
 	if (dirName.isEmpty())
@@ -88,7 +86,7 @@ void ProjectSettings::chooseProjectFolder() {
 		return;
 	}
 
-    lineEditLocation->setText(defaultDirectory);
+    lineEditLocation->setText(dirName);
 }
 
 void ProjectSettings::saveProject() {
