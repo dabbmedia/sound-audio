@@ -6,3 +6,12 @@ App
       |
        --Tracks
  
+
+
+
+Project WARNING: Qt has only been tested with version 10.13 of the platform SDK, you're using 10.14.
+Project WARNING: This is an unsupported configuration. You may experience build issues, and by using
+Project WARNING: the 10.14 SDK you are opting in to new features that Qt has not been prepared for.
+Project WARNING: E.g., 10.14 enables dark mode and layer-backed views, which Qt 5.11 does not support.
+Project WARNING: Please downgrade the SDK you use to build your app to version 10.13, or configure
+Project WARNING: with CONFIG+=sdk_no_version_check when running qmake to silence this warning.

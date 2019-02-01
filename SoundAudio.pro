@@ -77,3 +77,5 @@ DISTFILES += \
 
 RESOURCES += \
     resources.qrc
+
+QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.11
